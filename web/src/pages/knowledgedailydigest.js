@@ -70,18 +70,12 @@ const FetchDigest = () => {
             <tr>
               <th>Highlight</th>
               <th>Upvote</th>
-              <th>Score</th>
-              <th>Title</th>
-              <th>Author</th>
             </tr>
             {kindleDigest.map((data, key) => {
               return (
                 <tr key={key}>
                   <td><q>{data.highlight}</q></td>
                   <td><button onClick={() => UpvoteButtonHandler(data.entityid, setPlusOneStatus)}>+1</button></td>
-                  <td>{data.plusones}</td>
-                  <td>{data.title}</td>
-                  <td>{data.author}</td>
                 </tr>
               );
             })}
@@ -93,18 +87,12 @@ const FetchDigest = () => {
             <tr>
               <th>Highlight</th>
               <th>Upvote</th>
-              <th>Score</th>
-              <th>Title</th>
-              <th>Author</th>
             </tr>
             {notionDigest.map((data, key) => {
               return (
                 <tr key={key}>
                   <td><q>{data.quote}</q></td>
                   <td><button onClick={() => UpvoteButtonHandler(data.entityid, setPlusOneStatus)}>+1</button></td>
-                  <td>{data.plusones}</td>
-                  <td>{data.title}</td>
-                  <td>{data.author}</td>
                 </tr>
               );
             })}
@@ -116,15 +104,13 @@ const FetchDigest = () => {
             <tr>
               <th>Tweet</th>
               <th>Upvote</th>
-              <th>Score</th>
             </tr>
           {twitterDigest.map((data, key) => {
               return (
                 <tr key={key}>
                 {/*<td>{data.embedded_tweet}</td>*/}
-                  <td><Tweet tweetId={data.tweet_id} /></td>
+                  <td><Tweet tweetId={data.tweet_id} options={{conversation: 'none', width: '400'}}/></td>
                   <td><button onClick={() => UpvoteButtonHandler(data.entityid, setPlusOneStatus)}>+1</button></td>
-                  <td>{data.plusones}</td>
                 </tr>
               );
            })}
