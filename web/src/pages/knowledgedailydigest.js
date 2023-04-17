@@ -21,9 +21,7 @@ const UpvoteButtonHandler = (entityid, setPlusOneStatus) => {
 }
 
 const FetchDigest = () => {
-  const [twitterDigest, setTwitterDigest] = useState([])
-  const [notionDigest, setNotionDigest] = useState([])
-  const [kindleDigest, setKindleDigest] = useState([])
+  const [digest, setDigest] = useState([])
   const [error, setError] = useState("")
   const [plusOneStatus, setPlusOneStatus] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -39,9 +37,7 @@ const FetchDigest = () => {
         }
       })
       .then(data => {
-        setTwitterDigest(data['TWITTER'])
-        setKindleDigest(data['KINDLE'])
-        setNotionDigest(data['NOTION'])
+        setDigest(data['digest'])
         setIsLoading(false)
       })
       .catch(error => {
@@ -64,53 +60,21 @@ const FetchDigest = () => {
         <div>
         <h1> Digest: </h1> 
        
-        <h2>Kindle:</h2>
           <tbody>
             <tr>
               <th>Highlight</th>
               <th>Upvote</th>
             </tr>
-            {kindleDigest.map((data, key) => {
+            {digest.map((data, key) => {
               return (
                 <tr key={key}>
-                  <td><q>{data.highlight}</q></td>
+                  <td><q>{data[`highlight`] !== undefined ? data.highlight : data['quote'] !== undefined ? data.quote : <Tweet tweetId={data.tweet_id} options={{conversation: 'none', width: '400'}}/>}</q></td>
                   <td><button onClick={() => UpvoteButtonHandler(data.entityid, setPlusOneStatus)}>+1</button></td>
                 </tr>
               );
             })}
           </tbody>
   
-        <h2>Notion:</h2>
-          <tbody>
-            <tr>
-              <th>Highlight</th>
-              <th>Upvote</th>
-            </tr>
-            {notionDigest.map((data, key) => {
-              return (
-                <tr key={key}>
-                  <td><q>{data.quote}</q></td>
-                  <td><button onClick={() => UpvoteButtonHandler(data.entityid, setPlusOneStatus)}>+1</button></td>
-                </tr>
-              );
-            })}
-          </tbody>
-      
-        <h2>Twitter:</h2>
-          <tbody>
-            <tr>
-              <th>Tweet</th>
-              <th>Upvote</th>
-            </tr>
-          {twitterDigest.map((data, key) => {
-              return (
-                <tr key={key}>
-                  <td><Tweet tweetId={data.tweet_id} options={{conversation: 'none', width: '400'}}/></td>
-                  <td><button onClick={() => UpvoteButtonHandler(data.entityid, setPlusOneStatus)}>+1</button></td>
-                </tr>
-              );
-           })}
-          </tbody>
         </div>
       )}
     </div>
