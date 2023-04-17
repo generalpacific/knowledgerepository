@@ -65,7 +65,6 @@ const FetchDigest = () => {
         <h1> Digest: </h1> 
        
         <h2>Kindle:</h2>
-        {/*<pre>{JSON.stringify(twitterDigest, null, 2) }</pre>*/}
           <tbody>
             <tr>
               <th>Highlight</th>
@@ -82,7 +81,6 @@ const FetchDigest = () => {
           </tbody>
   
         <h2>Notion:</h2>
-          {/*<pre>{JSON.stringify(twitterDigest, null, 2) }</pre>*/}
           <tbody>
             <tr>
               <th>Highlight</th>
@@ -99,7 +97,6 @@ const FetchDigest = () => {
           </tbody>
       
         <h2>Twitter:</h2>
-          {/*<pre>{JSON.stringify(twitterDigest, null, 2) }</pre>*/}
           <tbody>
             <tr>
               <th>Tweet</th>
@@ -108,7 +105,6 @@ const FetchDigest = () => {
           {twitterDigest.map((data, key) => {
               return (
                 <tr key={key}>
-                {/*<td>{data.embedded_tweet}</td>*/}
                   <td><Tweet tweetId={data.tweet_id} options={{conversation: 'none', width: '400'}}/></td>
                   <td><button onClick={() => UpvoteButtonHandler(data.entityid, setPlusOneStatus)}>+1</button></td>
                 </tr>
