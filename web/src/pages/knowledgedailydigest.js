@@ -72,7 +72,7 @@ const FetchDigest = () => {
             {digest.map((data, key) => {
               return (
                 <tr key={key}>
-                  <td><q>{data[`highlight`] !== undefined ? data.highlight : data['quote'] !== undefined ? data.quote : <Tweet tweetId={data.tweet_id} options={{conversation: 'none', width: '400'}}/>}</q></td>
+                  <td>{data[`highlight`] !== undefined ? data.highlight : data['quote'] !== undefined ? data.quote : <Tweet tweetId={data.tweet_id} options={{conversation: 'none', width: '400'}}/>}</td>
                   <td><button onClick={() => UpvoteButtonHandler(data.entityid, setPlusOneStatus)}>+1</button></td>
                   <td>
                     <button
