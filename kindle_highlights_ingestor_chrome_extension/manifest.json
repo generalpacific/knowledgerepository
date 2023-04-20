@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Knowledge Repo Kindle Highlights Ingester",
+  "description": "If logged into read.amazon.com, this extension will ingest the highlights to your knowledge repo.",
+  "version": "1.0",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "icon.png"
+  }
+}
