@@ -3,8 +3,25 @@
   "name": "Knowledge Repo Kindle Highlights Ingester",
   "description": "If logged into read.amazon.com, this extension will ingest the highlights to your knowledge repo.",
   "version": "1.0",
-  "action": {
-    "default_popup": "index.html",
+  "content_scripts": [
+    {
+      "js": ["scripts/content.js"],
+      "matches": [
+        "https://read.amazon.com/notebook"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  "action":{
+    "default_title": "Click to ingest",
     "default_icon": "icon.png"
+  },
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
   }
 }
