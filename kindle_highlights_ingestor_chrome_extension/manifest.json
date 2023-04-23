@@ -8,7 +8,9 @@
       "js": ["scripts/content.js"],
       "matches": [
         "https://read.amazon.com/notebook"
-      ]
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
     }
   ],
   "background": {
@@ -16,7 +18,8 @@
   },
   "action":{
     "default_title": "Click to ingest",
-    "default_icon": "icon.png"
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
   },
   "icons": {
     "16": "icon.png",
