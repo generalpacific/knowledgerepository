@@ -20,10 +20,12 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
   // First, validate the message's structure.
   if ((msg.from === 'popup') && (msg.subject === 'DOMInfo')) {
     // Collect the necessary data.
-    books = document.getElementById('library').querySelector('kp-notebook-library-each-book')
+    books = document.getElementsByClassName('kp-notebook-library-each-book')[0]
     console.log('Books: ' + JSON.stringify(books))
+    bookTitle = books.querySelectorAll("h2")[0].textContent
+    console.log('Book: ' + JSON.stringify(bookTitle))
     var domInfo = {
-      library: books
+      library: bookTitle
     };
 
     // Directly respond to the sender (popup),
