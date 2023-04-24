@@ -14,7 +14,7 @@ z-index: 12;
 export const NavLink = styled(Link)`
 color: #444444;
 display: flex;
-align-items: center;
+align-items: left;
 text-decoration: none;
 padding: 0 1rem;
 height: 100%;
@@ -47,8 +47,5 @@ margin-right: -24px;
 /* Third Nav */
 /* width: 100vw;
 white-space: nowrap; */
-@media screen and (max-width: 768px) {
-	display: none;
-}
 `;
 
