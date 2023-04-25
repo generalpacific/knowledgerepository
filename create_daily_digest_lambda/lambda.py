@@ -12,15 +12,15 @@ from datetime import date
 import dateutil.tz
 import datetime
 
-DAILY_DIGEST_TABLE = os.environ('DAILY_DIGEST_TABLE')
-ANKIENTITIES_TABLE = os.environ('ANIKENTITIES_TABLE')
-KINDLE_HIGHLIGHTS_TABLE = os.environ('KINDLE_HIGHLIGHTS_TABLE')
-NOTION_BOOK_QUOTES_TABLE = os.environ('NOTION_BOOK_QUOTES_TABLE')
+DAILY_DIGEST_TABLE = os.environ['DAILY_DIGEST_TABLE']
+ANKIENTITIES_TABLE = os.environ['ANKIENTITIES_TABLE']
+KINDLE_HIGHLIGHTS_TABLE = os.environ['KINDLE_HIGHLIGHTS_TABLE']
+NOTION_BOOK_QUOTES_TABLE = os.environ['NOTION_BOOK_QUOTES_TABLE']
 
 def get_liked_tweets_from_db():
     dynamodb = boto3.resource('dynamodb')
 
-    table = dynamodb.Table(ANKINTITIES_TABLE)
+    table = dynamodb.Table(ANKIENTITIES_TABLE)
 
     try:
        response = table.query(IndexName="source-recallweight-index",
