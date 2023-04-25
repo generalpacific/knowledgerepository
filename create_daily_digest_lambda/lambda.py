@@ -25,7 +25,7 @@ def get_liked_tweets_from_db():
     try:
        response = table.query(IndexName="source-recallweight-index",
             KeyConditionExpression=Key('source').eq('TWITTER'),
-            Limit=10)
+            Limit=5)
     except ClientError as e:
         print("ERROR while getting tweets: " +
             e.response['Error']['Message'])
@@ -63,7 +63,7 @@ def get_kindle_highlights_from_db():
     try:
        response = table.query(IndexName="source-recallweight-index",
             KeyConditionExpression=Key('source').eq('KINDLE'),
-            Limit=15)
+            Limit=7)
     except ClientError as e:
         print("ERROR while getting tweets: " +
             e.response['Error']['Message'])
@@ -101,7 +101,7 @@ def get_notion_quotes_from_db():
     try:
        response = table.query(IndexName="source-recallweight-index",
             KeyConditionExpression=Key('source').eq('NOTION'),
-            Limit=10)
+            Limit=6)
     except ClientError as e:
         print("ERROR while getting tweets: " +
             e.response['Error']['Message'])
