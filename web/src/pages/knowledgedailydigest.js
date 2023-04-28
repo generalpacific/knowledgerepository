@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { Tooltip } from '@mui/material';
 import { Tweet } from 'react-twitter-widgets'
 import '../App.css';
 
@@ -24,8 +25,17 @@ const FetchDigest = () => {
   const [error, setError] = useState("")
   const [plusOneStatus, setPlusOneStatus] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [isInfoShown, setIsInfoShown] = useState(false);
 
+  const GetTooltip = (data) => {
+    var tooltip = ""
+    if (data['tweet_id'] === undefined) {
+      tooltip += 'Title: ' + data.title + '\nAuthor: ' + data.author
+    } else {
+      tooltip += 'This is a tweet!'
+    }
+    tooltip += ' +1s: ' + data.plusones
+    return tooltip
+  }
 
   const fetchData = () => {
     setIsLoading(true)
@@ -73,17 +83,11 @@ const FetchDigest = () => {
                   <td width="400px">{data['highlight'] !== undefined ? data.highlight : data['quote'] !== undefined ? data.quote : <Tweet tweetId={data.tweet_id} options={{conversation: 'none', width: '400px'}}/>}</td>
                   <td><button onClick={() => UpvoteButtonHandler(data.entityid, setPlusOneStatus)}>+1</button></td>
                   <td>
-                    <button
-                      onMouseEnter={() => setIsInfoShown(true)}
-                      onMouseLeave={() => setIsInfoShown(false)}>
+                    <Tooltip title={GetTooltip(data)} placement="top-start">
+                    <button>
                       Hover for info!
                     </button>
-                    {isInfoShown && (
-                      <div>
-                        {data['tweet_id'] === undefined ? 'Title: ' + data.title + '\nAuthor: ' + data.author : 'This is a tweet!'}
-                        {' Number of Likes: ' + data.plusones}
-                      </div>
-                    )}
+                    </Tooltip>
                   </td>  
                 </tr>
               );
