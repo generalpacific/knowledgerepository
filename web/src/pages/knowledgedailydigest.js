@@ -1,6 +1,4 @@
-import logo from '../logo.svg';
 import React, { useEffect, useState } from "react"
-import ReactTooltip from "react-tooltip"
 import { Tweet } from 'react-twitter-widgets'
 import '../App.css';
 
@@ -72,7 +70,7 @@ const FetchDigest = () => {
             {digest.map((data, key) => {
               return (
                 <tr key={key}>
-                  <td>{data[`highlight`] !== undefined ? data.highlight : data['quote'] !== undefined ? data.quote : <Tweet tweetId={data.tweet_id} options={{conversation: 'none', width: '400'}}/>}</td>
+                  <td width="400px">{data['highlight'] !== undefined ? data.highlight : data['quote'] !== undefined ? data.quote : <Tweet tweetId={data.tweet_id} options={{conversation: 'none', width: '400px'}}/>}</td>
                   <td><button onClick={() => UpvoteButtonHandler(data.entityid, setPlusOneStatus)}>+1</button></td>
                   <td>
                     <button
@@ -82,7 +80,7 @@ const FetchDigest = () => {
                     </button>
                     {isInfoShown && (
                       <div>
-                        {data['tweet_id'] == undefined ? 'Title: ' + data.title + '\nAuthor: ' + data.author : 'This is a tweet!'}
+                        {data['tweet_id'] === undefined ? 'Title: ' + data.title + '\nAuthor: ' + data.author : 'This is a tweet!'}
                         {' Number of Likes: ' + data.plusones}
                       </div>
                     )}
