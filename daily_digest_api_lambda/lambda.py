@@ -1,16 +1,11 @@
-import json, os
-import tweepy
-import random
-import string
-from decimal import Decimal
-import boto3
-import time
-from boto3.dynamodb.conditions import Key
-from pprint import pprint
-from botocore.exceptions import ClientError
-from datetime import date
-import dateutil.tz
 import datetime
+import json
+import os
+import random
+
+import boto3
+import dateutil.tz
+from botocore.exceptions import ClientError
 
 NOTION_TABLE = os.environ['NOTION_BOOK_QUOTES_TABLE']
 DAILY_DIGEST_TABLE = os.environ['DAILY_DIGEST_TABLE']
