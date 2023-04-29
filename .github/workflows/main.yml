@@ -1,9 +1,9 @@
-name: Deploy DailyDigestAPI to lambda
+name: Deploy Lambda functions in the knowledge repository
 on: [push]
 jobs:
 
   deploy_source:
-    name: deploy lambda from source
+    name: Deploy DailyDigestAPILambda
     runs-on: ubuntu-latest
     steps:
       - name: checkout source code
