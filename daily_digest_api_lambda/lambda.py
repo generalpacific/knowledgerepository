@@ -17,6 +17,7 @@ DAILY_DIGEST_TABLE = os.environ['DAILY_DIGEST_TABLE']
 ANKIENTITIES_TABLE = os.environ['ANKIENTITIES_TABLE']
 KINDLE_HIGHLIGHTS_TABLE = os.environ['KINDLE_HIGHLIGHTS_TABLE']
 
+# Get the notion quotes stored for the given entities
 def get_quote_json(highlight_entities):
     quote_json = []
     for highlight_entity in highlight_entities:
