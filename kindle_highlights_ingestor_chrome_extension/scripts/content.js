@@ -20,12 +20,20 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
   // First, validate the message's structure.
   if ((msg.from === 'popup') && (msg.subject === 'DOMInfo')) {
     // Collect the necessary data.
-    books = document.getElementsByClassName('kp-notebook-library-each-book')[0]
-    console.log('Books: ' + JSON.stringify(books))
-    bookTitle = books.querySelectorAll("h2")[0].textContent
-    console.log('Book: ' + JSON.stringify(bookTitle))
+    const highlightElems = document.querySelectorAll('.kp-notebook-highlight');
+    const highlights = [];
+    const bookTitleElement = document.querySelectorAll('.kp-notebook-metadata');
+
+    for (let i = 0; i < highlightElems.length; i++) {
+      const highlight = {};
+
+      highlight.text = highlightElems[i].querySelector('.a-size-base-plus').textContent.trim();
+      highlights.push(highlight)
+    }
+    console.log('Book: ' + JSON.stringify(highlights))
+
     var domInfo = {
-      library: bookTitle
+      library: highlights
     };
 
     // Directly respond to the sender (popup),
