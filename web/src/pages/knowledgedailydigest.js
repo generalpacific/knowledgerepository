@@ -25,6 +25,7 @@ const FetchDigest = () => {
   const [error, setError] = useState("")
   const [plusOneStatus, setPlusOneStatus] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [digestLoadtime, setDigestLoadtime] = useState(-1)
 
   const GetTooltip = (data) => {
     var tooltip = ""
@@ -39,6 +40,7 @@ const FetchDigest = () => {
 
   const fetchData = () => {
     setIsLoading(true)
+    const start_time = Date.now()
     fetch("https://9xj3ly8j6i.execute-api.us-east-2.amazonaws.com/prod/dailydigest")
       .then(response => {
          if (response.ok) {
@@ -49,6 +51,8 @@ const FetchDigest = () => {
       })
       .then(data => {
         setDigest(data['digest'])
+        const totalTimeInMs = Date.now() - start_time
+        setDigestLoadtime(totalTimeInMs)
         setIsLoading(false)
       })
       .catch(error => {
@@ -67,6 +71,7 @@ const FetchDigest = () => {
       {error && <p>{error}</p>}
       {plusOneStatus && <p>{plusOneStatus}</p>}
       {isLoading && <p>Loading...</p>}
+      {digestLoadtime != -1 && <p>Loaded page in {digestLoadtime}ms</p>}
       {!isLoading && !error && (
         <div>
         <h1> Digest: </h1> 
