@@ -138,6 +138,14 @@ def populate_dynamodb_table_with_data(create_dynamodb_tables):
 
 ## Tests start here.
 
+def ordered(obj):
+    if isinstance(obj, dict):
+        return sorted((k, ordered(v)) for k, v in obj.items())
+    if isinstance(obj, list):
+        return sorted(ordered(x) for x in obj)
+    else:
+        return obj
+
 def test_lambda_daily_digest(lambda_environment, populate_dynamodb_table_with_data):
     """Tests the lambda function for getting the daily digest."""
 
@@ -147,4 +155,6 @@ def test_lambda_daily_digest(lambda_environment, populate_dynamodb_table_with_da
     assert response["statusCode"] == 200
 
     digest = json.loads(response["body"])["digest"]
-    assert len(digest) == 6
+    expected_digest = EXPECTED_DAILY_DIGEST_TEST_DATA['digest']
+    assert len(digest) == len(expected_digest)
+    assert ordered(digest) == ordered(expected_digest)
