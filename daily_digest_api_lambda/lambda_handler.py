@@ -11,70 +11,85 @@ from botocore.exceptions import ClientError
 # Get the notion quotes stored for the given entities
 def get_quote_json(highlight_entities):
     quote_json = []
+
+    foreignid_to_originaldata = {}
     for highlight_entity in highlight_entities:
-        quote = {}
+        if 'plus_one' in highlight_entity:
+            foreignid_to_originaldata[highlight_entity['foreign_id']] = [highlight_entity['entityid'],
+                                                                         highlight_entity['plus_one']]
+        else:
+            foreignid_to_originaldata[highlight_entity['foreign_id']] = [highlight_entity['entityid'], 0]
+
+    try:
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table(os.environ['NOTION_BOOK_QUOTES_TABLE'])
+
+        batch_keys = {
+            table.name: {
+                'Keys': [{'id': highlight_entity['foreign_id']} for highlight_entity in highlight_entities]
+            }
+        }
         try:
-            dynamodb = boto3.resource('dynamodb')
-            table = dynamodb.Table(os.environ['NOTION_BOOK_QUOTES_TABLE'])
+            responses = dynamodb.batch_get_item(RequestItems=batch_keys)
 
-            try:
-                response = table.get_item(Key={
-                    'id': highlight_entity['foreign_id'],
-                })
-
-            except ClientError as e:
-                print("ERROR while getting quotes: " +
-                      e.response['Error']['Message'])
-                continue
-            else:
-                item = response['Item']
-                quote['entityid'] = highlight_entity['entityid']
+        except ClientError as e:
+            print("ERROR while getting quotes: " +
+                  e.response['Error']['Message'])
+            raise e
+        else:
+            for item in responses['Responses'][table.name]:
+                quote = {}
+                quote['entityid'] = foreignid_to_originaldata[item['id']][0]
                 quote['title'] = item['tite']
                 quote['author'] = item['author']
                 quote['quote'] = item['quote']
-                plus_one = 0
-                if 'plus_one' in highlight_entity:
-                    plus_one = highlight_entity['plus_one']
-                quote['plusones'] = str(plus_one)
+                quote['plusones'] = str(foreignid_to_originaldata[item['id']][1])
                 quote_json.append(quote)
-        except Exception as e:
-            print("Got error while processing quote: " + highlight_entity['foreign_id'] + " Error: ")
-            raise e
-
+    except Exception as e:
+        print("Got error while get highlights. Error: ")
+        raise e
     return quote_json
 
 
 def get_highlights_json(highlight_entities):
     quote_json = []
+
+    foreignid_to_originaldata = {}
     for highlight_entity in highlight_entities:
+        if 'plus_one' in highlight_entity:
+            foreignid_to_originaldata[highlight_entity['foreign_id']] = [highlight_entity['entityid'],
+                                                                         highlight_entity['plus_one']]
+        else:
+            foreignid_to_originaldata[highlight_entity['foreign_id']] = [highlight_entity['entityid'], 0]
+
+    try:
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table(os.environ['KINDLE_HIGHLIGHTS_TABLE'])
+
+        batch_keys = {
+            table.name: {
+                'Keys': [{'id': highlight_entity['foreign_id']} for highlight_entity in highlight_entities]
+            }
+        }
         try:
-            dynamodb = boto3.resource('dynamodb')
-            table = dynamodb.Table(os.environ['KINDLE_HIGHLIGHTS_TABLE'])
+            responses = dynamodb.batch_get_item(RequestItems=batch_keys)
 
-            try:
-                response = table.get_item(Key={
-                    'id': highlight_entity['foreign_id'],
-                })
-
-            except ClientError as e:
-                print("ERROR while getting quotes: " +
-                      e.response['Error']['Message'])
-                continue
-            else:
-                item = response['Item']
+        except ClientError as e:
+            print("ERROR while getting quotes: " +
+                  e.response['Error']['Message'])
+            raise e
+        else:
+            for item in responses['Responses'][table.name]:
                 quote = {}
-                quote['entityid'] = highlight_entity['entityid']
+                quote['entityid'] = foreignid_to_originaldata[item['id']][0]
                 quote['title'] = item['tite']
                 quote['author'] = item['author']
                 quote['highlight'] = item['highlight']
-                plus_one = 0
-                if 'plus_one' in highlight_entity:
-                    plus_one = highlight_entity['plus_one']
-                quote['plusones'] = str(plus_one)
+                quote['plusones'] = str(foreignid_to_originaldata[item['id']][1])
                 quote_json.append(quote)
-        except Exception as e:
-            print("Got error while processing quote: " + highlight_entity['foreign_id'] + " Error: ")
-            raise e
+    except Exception as e:
+        print("Got error while get highlights. Error: ")
+        raise e
     return quote_json
 
 

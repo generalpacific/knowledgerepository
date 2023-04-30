@@ -146,6 +146,7 @@ def ordered(obj):
     else:
         return obj
 
+
 def test_lambda_daily_digest(lambda_environment, populate_dynamodb_table_with_data):
     """Tests the lambda function for getting the daily digest."""
 
