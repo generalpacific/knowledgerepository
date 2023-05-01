@@ -125,21 +125,20 @@ def __get_entities(entities):
     table = dynamodb.Table(os.environ['ANKIENTITIES_TABLE'])
 
     foreign_ids = []
-    for entity_id in entities:
-        try:
-            try:
-                response = table.get_item(Key={
-                    'entityid': entity_id,
-                })
-
-            except ClientError as e:
-                print("ERROR while getting entity: " + entity_id + " Error:" +
-                      e.response['Error']['Message'])
-            else:
-                foreign_ids.append(response['Item'])
-        except Exception as e:
-            print("Got error while getting entity: " + entity_id + " Error: ")
-            raise e
+    batch_keys = {
+        table.name: {
+            'Keys': [{'entityid': entity_id} for entity_id in entities]
+        }
+    }
+    try:
+        responses = dynamodb.batch_get_item(RequestItems=batch_keys)
+    except ClientError as e:
+        print("ERROR while getting entity: " + entities + " Error:" +
+              e.response['Error']['Message'])
+        raise e
+    else:
+        for response in responses['Responses'][table.name]:
+            foreign_ids.append(response)
 
     return foreign_ids
 
