@@ -119,7 +119,7 @@ def __get_digest():
         raise e
 
 
-def get_entities(entities):
+def __get_entities(entities):
     dynamodb = boto3.resource('dynamodb')
 
     table = dynamodb.Table(os.environ['ANKIENTITIES_TABLE'])
@@ -144,7 +144,7 @@ def get_entities(entities):
     return foreign_ids
 
 
-def get_tweet_json(tweet_entities):
+def __get_tweet_json(tweet_entities):
     tweet_json = []
     for entity in tweet_entities:
         quote = {}
@@ -178,13 +178,13 @@ def lambda_handler(event, context):
 
     response_json = {}
 
-    tweet_entities = get_entities(digest_json['TWITTER'])
-    response_json['TWITTER'] = get_tweet_json(tweet_entities)
+    tweet_entities = __get_entities(digest_json['TWITTER'])
+    response_json['TWITTER'] = __get_tweet_json(tweet_entities)
 
-    notion_entities = get_entities(digest_json['NOTION'])
+    notion_entities = __get_entities(digest_json['NOTION'])
     response_json['NOTION'] = __get_quote_json(notion_entities)
 
-    kindle_entities = get_entities(digest_json['KINDLE'])
+    kindle_entities = __get_entities(digest_json['KINDLE'])
     response_json['KINDLE'] = __get_highlights_json(kindle_entities)
 
     twiddled_response = {}
