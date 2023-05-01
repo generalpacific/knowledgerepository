@@ -9,7 +9,7 @@ from botocore.exceptions import ClientError
 
 
 # Get the notion quotes stored for the given entities
-def get_quote_json(highlight_entities):
+def __get_quote_json(highlight_entities):
     quote_json = []
 
     foreignid_to_originaldata = {}
@@ -51,7 +51,7 @@ def get_quote_json(highlight_entities):
     return quote_json
 
 
-def get_highlights_json(highlight_entities):
+def __get_highlights_json(highlight_entities):
     quote_json = []
 
     foreignid_to_originaldata = {}
@@ -93,7 +93,7 @@ def get_highlights_json(highlight_entities):
     return quote_json
 
 
-def get_digest():
+def __get_digest():
     try:
         dynamodb = boto3.resource('dynamodb')
         print("Opening daily digest table with name: ", os.environ['DAILY_DIGEST_TABLE'])
@@ -159,7 +159,7 @@ def get_tweet_json(tweet_entities):
 
 
 def lambda_handler(event, context):
-    digest = get_digest()
+    digest = __get_digest()
 
     if digest is None:
         return {
@@ -182,10 +182,10 @@ def lambda_handler(event, context):
     response_json['TWITTER'] = get_tweet_json(tweet_entities)
 
     notion_entities = get_entities(digest_json['NOTION'])
-    response_json['NOTION'] = get_quote_json(notion_entities)
+    response_json['NOTION'] = __get_quote_json(notion_entities)
 
     kindle_entities = get_entities(digest_json['KINDLE'])
-    response_json['KINDLE'] = get_highlights_json(kindle_entities)
+    response_json['KINDLE'] = __get_highlights_json(kindle_entities)
 
     twiddled_response = {}
     twiddled_response['digest'] = []
