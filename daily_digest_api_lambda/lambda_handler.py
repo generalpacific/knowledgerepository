@@ -9,7 +9,7 @@ from botocore.exceptions import ClientError
 
 
 # Get notion and kindle entity data from their respective tables.
-def __get_entities_json(notion_entities, kindle_entities):
+def __get_entities_json(notion_entities, kindle_entities, dynamodb):
     foreignid_to_originaldata = {}
     for entity in notion_entities:
         plus_one = entity.get('plus_one', 0)
@@ -18,7 +18,6 @@ def __get_entities_json(notion_entities, kindle_entities):
         plus_one = entity.get('plus_one', 0)
         foreignid_to_originaldata[entity['foreign_id']] = [entity['entityid'], plus_one]
 
-    dynamodb = boto3.resource('dynamodb')
     notion_table = dynamodb.Table(os.environ['NOTION_BOOK_QUOTES_TABLE'])
     kindle_table = dynamodb.Table(os.environ['KINDLE_HIGHLIGHTS_TABLE'])
 
@@ -57,9 +56,8 @@ def __get_entities_json(notion_entities, kindle_entities):
     return notion_entity_json, kindle_entity_json
 
 
-def __get_digest():
+def __get_digest(dynamodb):
     try:
-        dynamodb = boto3.resource('dynamodb')
         print("Opening daily digest table with name: ", os.environ['DAILY_DIGEST_TABLE'])
         table = dynamodb.Table(os.environ['DAILY_DIGEST_TABLE'])
 
@@ -83,9 +81,7 @@ def __get_digest():
         raise e
 
 
-def __get_entities(entities):
-    dynamodb = boto3.resource('dynamodb')
-
+def __get_entities(entities, dynamodb):
     table = dynamodb.Table(os.environ['ANKIENTITIES_TABLE'])
 
     foreign_ids = []
@@ -122,7 +118,8 @@ def __get_tweet_json(tweet_entities):
 
 
 def lambda_handler(event, context):
-    digest = __get_digest()
+    dynamodb = boto3.resource('dynamodb')
+    digest = __get_digest(dynamodb)
 
     if digest is None:
         return {
@@ -141,12 +138,12 @@ def lambda_handler(event, context):
 
     response_json = {}
 
-    tweet_entities = __get_entities(digest_json['TWITTER'])
+    tweet_entities = __get_entities(digest_json['TWITTER'], dynamodb)
     response_json['TWITTER'] = __get_tweet_json(tweet_entities)
 
-    notion_entities = __get_entities(digest_json['NOTION'])
-    kindle_entities = __get_entities(digest_json['KINDLE'])
-    response_json['NOTION'], response_json['KINDLE'] = __get_entities_json(notion_entities, kindle_entities)
+    notion_entities = __get_entities(digest_json['NOTION'], dynamodb)
+    kindle_entities = __get_entities(digest_json['KINDLE'], dynamodb)
+    response_json['NOTION'], response_json['KINDLE'] = __get_entities_json(notion_entities, kindle_entities, dynamodb)
 
     twiddled_response = {}
     twiddled_response['digest'] = []
