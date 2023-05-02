@@ -8,89 +8,53 @@ import dateutil.tz
 from botocore.exceptions import ClientError
 
 
-# Get the notion quotes stored for the given entities
-def __get_quote_json(highlight_entities):
-    quote_json = []
-
+# Get notion and kindle entity data from their respective tables.
+def __get_entities_json(notion_entities, kindle_entities):
     foreignid_to_originaldata = {}
-    for highlight_entity in highlight_entities:
-        if 'plus_one' in highlight_entity:
-            foreignid_to_originaldata[highlight_entity['foreign_id']] = [highlight_entity['entityid'],
-                                                                         highlight_entity['plus_one']]
-        else:
-            foreignid_to_originaldata[highlight_entity['foreign_id']] = [highlight_entity['entityid'], 0]
+    for entity in notion_entities:
+        plus_one = entity.get('plus_one', 0)
+        foreignid_to_originaldata[entity['foreign_id']] = [entity['entityid'], plus_one]
+    for entity in kindle_entities:
+        plus_one = entity.get('plus_one', 0)
+        foreignid_to_originaldata[entity['foreign_id']] = [entity['entityid'], plus_one]
 
-    try:
-        dynamodb = boto3.resource('dynamodb')
-        table = dynamodb.Table(os.environ['NOTION_BOOK_QUOTES_TABLE'])
+    dynamodb = boto3.resource('dynamodb')
+    notion_table = dynamodb.Table(os.environ['NOTION_BOOK_QUOTES_TABLE'])
+    kindle_table = dynamodb.Table(os.environ['KINDLE_HIGHLIGHTS_TABLE'])
 
-        batch_keys = {
-            table.name: {
-                'Keys': [{'id': highlight_entity['foreign_id']} for highlight_entity in highlight_entities]
-            }
+    batch_keys = {
+        notion_table.name: {
+            'Keys': [{'id': entity['foreign_id']} for entity in notion_entities]
+        },
+        kindle_table.name: {
+            'Keys': [{'id': entity['foreign_id']} for entity in kindle_entities]
         }
-        try:
-            responses = dynamodb.batch_get_item(RequestItems=batch_keys)
+    }
+    responses = dynamodb.batch_get_item(RequestItems=batch_keys)
 
-        except ClientError as e:
-            print("ERROR while getting quotes: " +
-                  e.response['Error']['Message'])
-            raise e
-        else:
-            for item in responses['Responses'][table.name]:
-                quote = {}
-                quote['entityid'] = foreignid_to_originaldata[item['id']][0]
-                quote['title'] = item['tite']
-                quote['author'] = item['author']
-                quote['quote'] = item['quote']
-                quote['plusones'] = str(foreignid_to_originaldata[item['id']][1])
-                quote_json.append(quote)
-    except Exception as e:
-        print("Got error while get highlights. Error: ")
-        raise e
-    return quote_json
+    notion_entity_json = []
+    notion_responses = responses['Responses'][notion_table.name]
+    for item, entity in zip(notion_responses, notion_entities):
+        entity_data = {}
+        entity_data['entityid'] = foreignid_to_originaldata[item['id']][0]
+        entity_data['title'] = item.get('tite', '')
+        entity_data['author'] = item.get('author', '')
+        entity_data['quote'] = item.get('quote', '')
+        entity_data['plusones'] = str(foreignid_to_originaldata[item['id']][1])
+        notion_entity_json.append(entity_data)
 
+    kindle_entity_json = []
+    kindle_responses = responses['Responses'][kindle_table.name]
+    for item, entity in zip(kindle_responses, kindle_entities):
+        entity_data = {}
+        entity_data['entityid'] = foreignid_to_originaldata[item['id']][0]
+        entity_data['title'] = item.get('tite', '')
+        entity_data['author'] = item.get('author', '')
+        entity_data['highlight'] = item.get('highlight', '')
+        entity_data['plusones'] = str(foreignid_to_originaldata[item['id']][1])
+        kindle_entity_json.append(entity_data)
 
-def __get_highlights_json(highlight_entities):
-    quote_json = []
-
-    foreignid_to_originaldata = {}
-    for highlight_entity in highlight_entities:
-        if 'plus_one' in highlight_entity:
-            foreignid_to_originaldata[highlight_entity['foreign_id']] = [highlight_entity['entityid'],
-                                                                         highlight_entity['plus_one']]
-        else:
-            foreignid_to_originaldata[highlight_entity['foreign_id']] = [highlight_entity['entityid'], 0]
-
-    try:
-        dynamodb = boto3.resource('dynamodb')
-        table = dynamodb.Table(os.environ['KINDLE_HIGHLIGHTS_TABLE'])
-
-        batch_keys = {
-            table.name: {
-                'Keys': [{'id': highlight_entity['foreign_id']} for highlight_entity in highlight_entities]
-            }
-        }
-        try:
-            responses = dynamodb.batch_get_item(RequestItems=batch_keys)
-
-        except ClientError as e:
-            print("ERROR while getting quotes: " +
-                  e.response['Error']['Message'])
-            raise e
-        else:
-            for item in responses['Responses'][table.name]:
-                quote = {}
-                quote['entityid'] = foreignid_to_originaldata[item['id']][0]
-                quote['title'] = item['tite']
-                quote['author'] = item['author']
-                quote['highlight'] = item['highlight']
-                quote['plusones'] = str(foreignid_to_originaldata[item['id']][1])
-                quote_json.append(quote)
-    except Exception as e:
-        print("Got error while get highlights. Error: ")
-        raise e
-    return quote_json
+    return notion_entity_json, kindle_entity_json
 
 
 def __get_digest():
@@ -181,10 +145,8 @@ def lambda_handler(event, context):
     response_json['TWITTER'] = __get_tweet_json(tweet_entities)
 
     notion_entities = __get_entities(digest_json['NOTION'])
-    response_json['NOTION'] = __get_quote_json(notion_entities)
-
     kindle_entities = __get_entities(digest_json['KINDLE'])
-    response_json['KINDLE'] = __get_highlights_json(kindle_entities)
+    response_json['NOTION'], response_json['KINDLE'] = __get_entities_json(notion_entities, kindle_entities)
 
     twiddled_response = {}
     twiddled_response['digest'] = []
