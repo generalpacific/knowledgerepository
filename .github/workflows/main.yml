@@ -2,7 +2,7 @@ name: Deploy Lambda functions in the knowledge repository
 on: [push]
 jobs:
 
-  deploy_source:
+  deploy_daily_digest_api_lambda:
     name: Deploy DailyDigestAPILambda
     runs-on: ubuntu-latest
     steps:
@@ -17,7 +17,7 @@ jobs:
           function_name: DailyDigestAPILambda 
           source: daily_digest_api_lambda/lambda_handler.py
   
-  deploy_source:
+  deploy_create_daily_digest_lambda:
     name: Deploy CreateDailyDigestLambda 
     runs-on: ubuntu-latest
     steps:
