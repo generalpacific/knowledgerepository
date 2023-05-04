@@ -13,16 +13,11 @@ import dateutil.tz
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 
-DAILY_DIGEST_TABLE = os.environ['DAILY_DIGEST_TABLE']
-ANKIENTITIES_TABLE = os.environ['ANKIENTITIES_TABLE']
-KINDLE_HIGHLIGHTS_TABLE = os.environ['KINDLE_HIGHLIGHTS_TABLE']
-NOTION_BOOK_QUOTES_TABLE = os.environ['NOTION_BOOK_QUOTES_TABLE']
-
 
 def __get_liked_tweets_from_db():
     dynamodb = boto3.resource('dynamodb')
 
-    table = dynamodb.Table(ANKIENTITIES_TABLE)
+    table = dynamodb.Table(os.environ['ANKIENTITIES_TABLE'])
 
     try:
         response = table.query(IndexName="source-recallweight-index",
@@ -61,7 +56,7 @@ def __get_liked_tweets_from_db():
 def __get_kindle_highlights_from_db():
     dynamodb = boto3.resource('dynamodb')
 
-    table = dynamodb.Table(ANKIENTITIES_TABLE)
+    table = dynamodb.Table(os.environ['ANKIENTITIES_TABLE'])
 
     try:
         response = table.query(IndexName="source-recallweight-index",
@@ -100,7 +95,7 @@ def __get_kindle_highlights_from_db():
 def __get_notion_quotes_from_db():
     dynamodb = boto3.resource('dynamodb')
 
-    table = dynamodb.Table(ANKIENTITIES_TABLE)
+    table = dynamodb.Table(os.environ['ANKIENTITIES_TABLE'])
 
     try:
         response = table.query(IndexName="source-recallweight-index",
@@ -138,7 +133,7 @@ def __get_notion_quotes_from_db():
 
 def __UpdateDigest(digest):
     dyndb = boto3.resource('dynamodb')
-    table = dyndb.Table(DAILY_DIGEST_TABLE)
+    table = dyndb.Table(os.environ['DAILY_DIGEST_TABLE'])
     retries = 0
     pacific_tz = dateutil.tz.gettz('US/Pacific')
     date_str = datetime.datetime.now(tz=pacific_tz).strftime("%Y-%m-%d")
