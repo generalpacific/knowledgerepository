@@ -100,6 +100,7 @@ def test_lambda_create_daily_digest(lambda_environment, populate_dynamodb_table_
     response = table.get_item(Key={
         'date': today_date,
     })
-    print(response)
     expected_digest = DAILY_DIGEST_ID_TEST_DATA
-    assert len(json.loads(response['Item']['digest'])) == len(expected_digest)
+    digest = json.loads(response['Item']['digest'])
+    assert len(digest) == len(expected_digest)
+    assert digest == expected_digest
