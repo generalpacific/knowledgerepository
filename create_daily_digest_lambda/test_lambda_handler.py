@@ -1,15 +1,14 @@
-import datetime
-import json
-import os
-import unittest
-from unittest.mock import patch, MagicMock
-
 import boto3
+import datetime
 import dateutil.tz
+import json
 import lambda_handler
 import mock
 import moto
+import os
 import pytest
+import unittest
+from unittest.mock import patch, MagicMock
 
 DAILY_DIGEST_TABLE = "daily-digest-table"
 ANKIENTITIES_TABLE = "ankientities-table"
@@ -24,6 +23,9 @@ def lambda_environment():
     print("Setting lambda environment variables")
     os.environ['DAILY_DIGEST_TABLE'] = DAILY_DIGEST_TABLE
     os.environ['ANKIENTITIES_TABLE'] = ANKIENTITIES_TABLE
+    os.environ['NUM_KINDLE_ENTITIES'] = "2"
+    os.environ['NUM_NOTION_ENTITIES'] = "2"
+    os.environ['NUM_TWITTER_ENTITIES'] = "2"
 
 
 @pytest.fixture

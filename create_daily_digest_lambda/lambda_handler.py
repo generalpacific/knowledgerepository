@@ -1,17 +1,16 @@
+import boto3
 import datetime
+import dateutil.tz
 import json
 import os
 import random
 import string
 import time
+from boto3.dynamodb.conditions import Key
+from botocore.exceptions import ClientError
 from datetime import date
 from decimal import Decimal
 from pprint import pprint
-
-import boto3
-import dateutil.tz
-from boto3.dynamodb.conditions import Key
-from botocore.exceptions import ClientError
 
 
 def __get_liked_tweets_from_db():
@@ -22,7 +21,7 @@ def __get_liked_tweets_from_db():
     try:
         response = table.query(IndexName="source-recallweight-index",
                                KeyConditionExpression=Key('source').eq('TWITTER'),
-                               Limit=5)
+                               Limit=int(os.environ['NUM_TWITTER_ENTITIES']))
     except ClientError as e:
         print("ERROR while getting tweets: " +
               e.response['Error']['Message'])
@@ -61,7 +60,7 @@ def __get_kindle_highlights_from_db():
     try:
         response = table.query(IndexName="source-recallweight-index",
                                KeyConditionExpression=Key('source').eq('KINDLE'),
-                               Limit=7)
+                               Limit=int(os.environ['NUM_KINDLE_ENTITIES']))
     except ClientError as e:
         print("ERROR while getting tweets: " +
               e.response['Error']['Message'])
@@ -100,7 +99,7 @@ def __get_notion_quotes_from_db():
     try:
         response = table.query(IndexName="source-recallweight-index",
                                KeyConditionExpression=Key('source').eq('NOTION'),
-                               Limit=6)
+                               Limit=int(os.environ['NUM_NOTION_ENTITIES']))
     except ClientError as e:
         print("ERROR while getting tweets: " +
               e.response['Error']['Message'])
