@@ -1,21 +1,16 @@
-import boto3
 import datetime
-import dateutil.tz
 import json
 import os
-import random
-import string
 import time
-from boto3.dynamodb.conditions import Key
-from botocore.exceptions import ClientError
-from datetime import date
-from decimal import Decimal
 from pprint import pprint
 
+import boto3
+import dateutil.tz
+from boto3.dynamodb.conditions import Key
+from botocore.exceptions import ClientError
 
-def __get_liked_tweets_from_db():
-    dynamodb = boto3.resource('dynamodb')
 
+def __get_liked_tweets_from_db(dynamodb):
     table = dynamodb.Table(os.environ['ANKIENTITIES_TABLE'])
 
     try:
@@ -52,9 +47,7 @@ def __get_liked_tweets_from_db():
         return tweet_ids
 
 
-def __get_kindle_highlights_from_db():
-    dynamodb = boto3.resource('dynamodb')
-
+def __get_kindle_highlights_from_db(dynamodb):
     table = dynamodb.Table(os.environ['ANKIENTITIES_TABLE'])
 
     try:
@@ -91,9 +84,7 @@ def __get_kindle_highlights_from_db():
         return quote_ids
 
 
-def __get_notion_quotes_from_db():
-    dynamodb = boto3.resource('dynamodb')
-
+def __get_notion_quotes_from_db(dynamodb):
     table = dynamodb.Table(os.environ['ANKIENTITIES_TABLE'])
 
     try:
@@ -130,8 +121,7 @@ def __get_notion_quotes_from_db():
         return quote_ids
 
 
-def __UpdateDigest(digest):
-    dyndb = boto3.resource('dynamodb')
+def __updateDigest(digest, dyndb):
     table = dyndb.Table(os.environ['DAILY_DIGEST_TABLE'])
     retries = 0
     pacific_tz = dateutil.tz.gettz('US/Pacific')
@@ -154,18 +144,19 @@ def __UpdateDigest(digest):
 
 
 def lambda_handler(event, context):
-    tweet_ids = __get_liked_tweets_from_db()
+    dynamodb = boto3.resource('dynamodb')
+    tweet_ids = __get_liked_tweets_from_db(dynamodb)
 
-    quote_ids = __get_notion_quotes_from_db()
+    quote_ids = __get_notion_quotes_from_db(dynamodb)
 
-    highlight_ids = __get_kindle_highlights_from_db()
+    highlight_ids = __get_kindle_highlights_from_db(dynamodb)
 
     digest = {}
     digest['TWITTER'] = tweet_ids
     digest['NOTION'] = quote_ids
     digest['KINDLE'] = highlight_ids
 
-    __UpdateDigest(digest)
+    __updateDigest(digest, dynamodb)
 
     return {
         'statusCode': 200,
