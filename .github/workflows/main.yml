@@ -31,3 +31,18 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: CreateDailyDigest
           source: create_daily_digest_lambda/lambda_handler.py
+  
+  fetch_liked_tweets_lambda:
+    name: Deploy AnkiFetchTweetsLambda 
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout source code
+        uses: actions/checkout@v3
+      - name: default deploy
+        uses: appleboy/lambda-action@v0.1.9
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          function_name: AnkiFetchTweetsLambda
+          source: fetch_liked_tweets_lambda/lambda_handler.py
