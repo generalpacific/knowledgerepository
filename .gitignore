@@ -1,3 +1,5 @@
 kindle_highlights_ingestor/build.zip
 kindle_highlights_ingestor/bin
 daily_digest_api_lambda/__pycache__
+create_daily_digest_lambda/__pycache__
+s3_kindle_highlights_ingestor_lambda/__pycache__/
