@@ -20,7 +20,7 @@ ACCESS_KEY = os.environ['ACCESS_KEY']
 ACCESS_SECRET = os.environ['ACCESS_SECRET']
 
 
-def get_liked_tweets(since_tweet_id):
+def __get_liked_tweets(since_tweet_id):
     print("Setting up tweepy api")
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -31,7 +31,7 @@ def get_liked_tweets(since_tweet_id):
     return favorites
 
 
-def get_max_tweet_id(dynamodb=None):
+def __get_max_tweet_id(dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb')
 
@@ -47,7 +47,7 @@ def get_max_tweet_id(dynamodb=None):
         return response['Items'][0]['tweeid']
 
 
-def update_dynamodb_with_tweets(favorites, old_max_id):
+def __update_dynamodb_with_tweets(favorites, old_max_id):
     dynamodb = boto3.resource('dynamodb')
     new_max_id = -1
     pacific_tz = dateutil.tz.gettz('US/Pacific')
@@ -86,9 +86,9 @@ def update_dynamodb_with_tweets(favorites, old_max_id):
 
 
 def lambda_handler(event, context):
-    max_id = get_max_tweet_id()
+    max_id = __get_max_tweet_id()
     pprint("Got max tweet id: " + max_id)
-    favorites = get_liked_tweets(max_id)
+    favorites = __get_liked_tweets(max_id)
 
     if len(favorites) == 0:
         print("No new favorites to updates. Returning.")
@@ -97,7 +97,7 @@ def lambda_handler(event, context):
             'body': json.dumps('No new liked tweets!')
         }
 
-    update_dynamodb_with_tweets(favorites, max_id)
+    __update_dynamodb_with_tweets(favorites, max_id)
 
     return {
         'statusCode': 200,
