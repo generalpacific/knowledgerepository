@@ -11,7 +11,7 @@ import dateutil.tz
 import tweepy
 from botocore.exceptions import ClientError
 
-# Gets the liked tweets for the user since the max id that is stored in the 
+# Gets the liked tweets for the user since the max id that is stored in the
 # DynamoDb table.
 
 CONSUMER_KEY = os.environ['CONSUMER_KEY']
@@ -24,13 +24,10 @@ def get_liked_tweets(since_tweet_id):
     print("Setting up tweepy api")
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+
     api = tweepy.API(auth)
 
-    # getting the liked statuses
-    print("Calling api.favorites")
-    favorites = api.favorites("Being_Pacific", since_id=since_tweet_id)
-    print("Got api.favorites " + str(len(favorites)))
-
+    favorites = api.get_favorites(screen_name='Being_Pacific')
     return favorites
 
 
