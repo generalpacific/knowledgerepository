@@ -32,12 +32,12 @@ def lambda_handler(event, context):
 
     return {
         'statusCode': 200,
-        'body': json.dumps(
-            'Successfully ingested highlights from S3!. Number of highlights ' + str(len(highlight_data)))
+        'body': json.dumps(highlight_data)
     }
 
 
 def __parse_highlights(content):
+    content = content.replace('\ufeff', '')
     lines = content.split('\n')
     data = []
     print('Number of lines read: ', len(lines))
