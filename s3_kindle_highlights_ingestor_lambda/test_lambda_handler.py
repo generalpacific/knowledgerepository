@@ -98,4 +98,4 @@ def test_lambda_ingest_from_s3(lambda_environment, create_aws_resources):
             "metadata": item['metadata']['S']
         }
         assert item_data in EXPECTED_HIGHLIGHTS_FROM_TESTDATA
-
+    # TODO: Add support for testing the ankientities table

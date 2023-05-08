@@ -42,6 +42,7 @@ def lambda_handler(event, context):
     }
 
 
+# TODO: add support to dedup the highlights with latest highlight table
 def __put_highlights_in_db(highlight_data):
     for highlight in highlight_data:
         __put_highlight_in_db(highlight['title'], highlight['author'], highlight['highlight'], highlight['metadata'])
