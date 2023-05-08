@@ -23,17 +23,22 @@ EXPECTED_HIGHLIGHTS_FROM_TESTDATA = [{'title': 'Thinking in Systems', 'author': 
                                       'metadata': 'Your Highlight on page 83 | Location 1189-1191 | Added on Wednesday, August 10, 2022 7:59:22 AM',
                                       'highlight': 'The Fogg Behavior Model states that for a behavior (B) to occur, three things must be present at the same time: motivation (M), ability (A), and a trigger (T). More succinctly, B = MAT.'}]
 
+KINDLE_HIGHLIGHTS_TABLE = "kindle-highlights-table"
+ANKIENTITIES_TABLE = "ankientities-table"
+
 
 @pytest.fixture
 def lambda_environment():
     print("Setting lambda environment variables")
     os.environ['KINDLE_HIGHLIGHTS_S3_BUCKET'] = KINDLE_HIGHLIGHTS_S3_BUCKET
     os.environ['KINDLE_HIGHLIGHTS_S3_FILE_NAME'] = KINDLE_HIGHLIGHTS_S3_FILE_NAME
+    os.environ['KINDLE_HIGHLIGHTS_TABLE'] = KINDLE_HIGHLIGHTS_TABLE
+    os.environ['ANKIENTITIES_TABLE'] = ANKIENTITIES_TABLE
 
 
 @pytest.fixture
-def create_s3_file():
-    with moto.mock_s3():
+def create_aws_resources():
+    with moto.mock_all():
         # the file had 4 test highlights
         with open('testdata/testhighlights.txt', 'r') as file:
             content = file.read()
@@ -43,11 +48,33 @@ def create_s3_file():
         s3.put_object(Bucket=KINDLE_HIGHLIGHTS_S3_BUCKET, Key=KINDLE_HIGHLIGHTS_S3_FILE_NAME,
                       Body=content)
         print('Done adding test data in s3 file: ', KINDLE_HIGHLIGHTS_S3_FILE_NAME)
-        yield s3
+
+        client = boto3.client("dynamodb")
+        client.create_table(
+            AttributeDefinitions=[
+                {"AttributeName": "entityid", "AttributeType": "S"}
+            ],
+            TableName=ANKIENTITIES_TABLE,
+            KeySchema=[
+                {"AttributeName": "entityid", "KeyType": "HASH"}
+            ],
+            BillingMode="PAY_PER_REQUEST"
+        )
+        client.create_table(
+            AttributeDefinitions=[
+                {"AttributeName": "id", "AttributeType": "S"}
+            ],
+            TableName=KINDLE_HIGHLIGHTS_TABLE,
+            KeySchema=[
+                {"AttributeName": "id", "KeyType": "HASH"}
+            ],
+            BillingMode="PAY_PER_REQUEST"
+        )
+        yield s3, KINDLE_HIGHLIGHTS_TABLE, ANKIENTITIES_TABLE
 
 
 ## Tests start here.
-def test_lambda_ingest_from_s3(lambda_environment, create_s3_file):
+def test_lambda_ingest_from_s3(lambda_environment, create_aws_resources):
     """Tests the lambda function that reads highlights from s3 and ingests them."""
 
     response = lambda_handler.lambda_handler({}, {})
@@ -55,3 +82,20 @@ def test_lambda_ingest_from_s3(lambda_environment, create_s3_file):
     print("response: ", response)
     assert response["statusCode"] == 200
     assert response["body"] == json.dumps(EXPECTED_HIGHLIGHTS_FROM_TESTDATA)
+
+    #### Verify data in kindle highlights is saved correctly.
+    dynamodb = boto3.client("dynamodb")
+    response = dynamodb.scan(TableName=KINDLE_HIGHLIGHTS_TABLE)
+
+    dynamodb_data = response['Items']
+    assert len(dynamodb_data) == len(EXPECTED_HIGHLIGHTS_FROM_TESTDATA)
+    # Extract data from DynamoDB items and create a list of dicts
+    for item in dynamodb_data:
+        item_data = {
+            "title": item['tite']['S'],
+            "author": item['author']['S'],
+            "highlight": item['highlight']['S'],
+            "metadata": item['metadata']['S']
+        }
+        assert item_data in EXPECTED_HIGHLIGHTS_FROM_TESTDATA
+
