@@ -42,9 +42,15 @@ def lambda_handler(event, context):
     }
 
 
-# TODO: add support to dedup the highlights with latest highlight table
 def __put_highlights_in_db(highlight_data):
+    current_title_to_highlight_map = {}
     for highlight in highlight_data:
+        title = highlight['title']
+        if title not in current_title_to_highlight_map:
+            current_title_to_highlight_map[title] = __get_highlights(title)
+    for highlight in highlight_data:
+        if highlight['highlight'] in current_title_to_highlight_map[highlight['title']]:
+            continue
         __put_highlight_in_db(highlight['title'], highlight['author'], highlight['highlight'], highlight['metadata'])
 
 
@@ -117,3 +123,32 @@ def __parse_highlights(content):
                      'metadata': metadata,
                      'highlight': highlight})
     return data
+
+
+def __get_highlights(title):
+    dyndb = boto3.client('dynamodb')
+    return_highlights = set()
+    try:
+        # Set up the Query parameters
+        query_params = {
+            'TableName': os.environ['KINDLE_HIGHLIGHTS_TABLE'],
+            'IndexName': 'tite-index',
+            'KeyConditionExpression': 'tite = :title',
+            'ExpressionAttributeValues': {
+                ':title': {'S': title}
+            }
+        }
+
+        # Query the table using the GSI on the title column
+        response = dyndb.query(**query_params)
+    except ClientError as e:
+        print("ERROR while getting latest quote. Returning empty. Error: " +
+              e.response['Error']['Message'])
+        return return_highlights
+    else:
+        if 'Items' in response:
+            items = response['Items']
+            for item in items:
+                return_highlights.add(item['highlight'])
+        else:
+            return return_highlights
