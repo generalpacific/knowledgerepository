@@ -90,7 +90,9 @@ def test_lambda_ingest_from_s3(lambda_environment, create_aws_resources):
     dynamodb_data = response['Items']
     assert len(dynamodb_data) == len(EXPECTED_HIGHLIGHTS_FROM_TESTDATA)
     # Extract data from DynamoDB items and create a list of dicts
+    foreign_ids = []
     for item in dynamodb_data:
+        foreign_ids.append(item['id']['S'])
         item_data = {
             "title": item['tite']['S'],
             "author": item['author']['S'],
@@ -98,5 +100,16 @@ def test_lambda_ingest_from_s3(lambda_environment, create_aws_resources):
             "metadata": item['metadata']['S']
         }
         assert item_data in EXPECTED_HIGHLIGHTS_FROM_TESTDATA
-    # TODO: Add support for testing the ankientities table
+
+    response = dynamodb.scan(TableName=ANKIENTITIES_TABLE)
+    dynamodb_data = response['Items']
+    assert len(dynamodb_data) == len(EXPECTED_HIGHLIGHTS_FROM_TESTDATA)
+    dynamo_foreign_ids_data = set()
+    for item in dynamodb_data:
+        dynamo_foreign_ids_data.add(item['foreign_id']['S'])
+
+    for foreign_id in foreign_ids:
+        assert foreign_id in dynamo_foreign_ids_data
+
     # TODO: Add support for testing the dedup logic
+
