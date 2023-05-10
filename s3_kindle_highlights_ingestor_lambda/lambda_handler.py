@@ -34,25 +34,27 @@ def lambda_handler(event, context):
     highlight_data = __parse_highlights(file_contents)
 
     print('Done parsing highlight data. Ingesting highlights in db.')
-    __put_highlights_in_db(highlight_data)
+    num_highlights_ingested = __put_highlights_in_db(highlight_data)
 
     return {
         'statusCode': 200,
-        'body': json.dumps(highlight_data)
+        'body': 'Ingested ' + str(num_highlights_ingested) + ' highlights.'
     }
 
 
 def __put_highlights_in_db(highlight_data):
+    num_highlights_ingested = 0
     current_title_to_highlight_map = {}
     for highlight in highlight_data:
         title = highlight['title']
         if title not in current_title_to_highlight_map:
             current_title_to_highlight_map[title] = __get_highlights(title)
-    print(current_title_to_highlight_map)
     for highlight in highlight_data:
         if highlight['highlight'] in current_title_to_highlight_map[highlight['title']]:
             continue
+        num_highlights_ingested += 1
         __put_highlight_in_db(highlight['title'], highlight['author'], highlight['highlight'], highlight['metadata'])
+    return num_highlights_ingested
 
 
 def __put_highlight_in_db(title, author, highlight, metadata):

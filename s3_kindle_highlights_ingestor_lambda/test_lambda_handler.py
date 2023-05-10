@@ -90,6 +90,8 @@ def create_aws_resources():
             BillingMode="PAY_PER_REQUEST"
         )
 
+        # add some highlights to test that dedup logic.
+        # One highlight is already present so it shouldnt be added again.
         item = {
             "id": {"S": "19b86ad0-eedd-11ed-a019-2cf0ee1e2bee"},
             "tite": {"S": "Indistractable"},
@@ -101,7 +103,6 @@ def create_aws_resources():
             "create_time": {"S": "2022-02-03"}
         }
 
-        # add some highlights to test that dedup logic.
         client.put_item(TableName=KINDLE_HIGHLIGHTS_TABLE,
                         Item=item
                         )
@@ -127,7 +128,7 @@ def test_lambda_ingest_from_s3(lambda_environment, create_aws_resources):
 
     print("response: ", response)
     assert response["statusCode"] == 200
-    assert response["body"] == json.dumps(EXPECTED_HIGHLIGHTS_FROM_TESTDATA)
+    assert response["body"] == 'Ingested 4 highlights.'
 
     #### Verify data in kindle highlights is saved correctly.
     dynamodb = boto3.client("dynamodb")
