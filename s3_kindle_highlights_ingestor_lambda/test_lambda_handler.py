@@ -21,7 +21,10 @@ EXPECTED_HIGHLIGHTS_FROM_TESTDATA = [{'title': 'Thinking in Systems', 'author': 
                                       'highlight': 'We submit our free time to numerical evaluation, interact with algorithmic versions of each other, and build and maintain personal brands.'},
                                      {'title': 'Indistractable', 'author': 'Eyal, Nir',
                                       'metadata': 'Your Highlight on page 83 | Location 1189-1191 | Added on Wednesday, August 10, 2022 7:59:22 AM',
-                                      'highlight': 'The Fogg Behavior Model states that for a behavior (B) to occur, three things must be present at the same time: motivation (M), ability (A), and a trigger (T). More succinctly, B = MAT.'}]
+                                      'highlight': 'The Fogg Behavior Model states that for a behavior (B) to occur, three things must be present at the same time: motivation (M), ability (A), and a trigger (T). More succinctly, B = MAT.'},
+                                     {'title': 'Indistractable', 'author': 'Eyal, Nir',
+                                      'metadata': 'Your Highlight on page 94 | Location 2001-2002 | Added on Wednesday, August 10, 2022 7:59:22 AM',
+                                      'highlight': 'Expected highlight that is already in dynamodb'}]
 
 KINDLE_HIGHLIGHTS_TABLE = "kindle-highlights-table"
 ANKIENTITIES_TABLE = "ankientities-table"
@@ -62,14 +65,57 @@ def create_aws_resources():
         )
         client.create_table(
             AttributeDefinitions=[
-                {"AttributeName": "id", "AttributeType": "S"}
+                {"AttributeName": "id", "AttributeType": "S"},
+                {"AttributeName": "tite", "AttributeType": "S"}
             ],
             TableName=KINDLE_HIGHLIGHTS_TABLE,
             KeySchema=[
                 {"AttributeName": "id", "KeyType": "HASH"}
             ],
+            GlobalSecondaryIndexes=[
+                {
+                    "IndexName": "tite-index",
+                    "KeySchema": [
+                        {"AttributeName": "tite", "KeyType": "HASH"}
+                    ],
+                    "Projection": {
+                        "ProjectionType": "ALL"
+                    },
+                    "ProvisionedThroughput": {
+                        "ReadCapacityUnits": 5,
+                        "WriteCapacityUnits": 5
+                    }
+                }
+            ],
             BillingMode="PAY_PER_REQUEST"
         )
+
+        item = {
+            "id": {"S": "19b86ad0-eedd-11ed-a019-2cf0ee1e2bee"},
+            "tite": {"S": "Indistractable"},
+            "author": {"S": "Eyal, Nir"},
+            "highlight": {
+                "S": "The Fogg Behavior Model states that for a behavior (B) to occur, three things must be present at the same time: motivation (M), ability (A), and a trigger (T). More succinctly, B = MAT."},
+            "metadata": {
+                "S": "Your Highlight on page 83 | Location 1189-1191 | Added on Wednesday, August 10, 2022 7:59:22 AM"},
+            "create_time": {"S": "2022-02-03"}
+        }
+
+        # add some highlights to test that dedup logic.
+        client.put_item(TableName=KINDLE_HIGHLIGHTS_TABLE,
+                        Item=item
+                        )
+
+        item = {
+            "entityid": {"S": "testid2"},
+            "foreign_id": {"S": "19b86ad0-eedd-11ed-a019-2cf0ee1e2bee"}
+        }
+
+        # add some highlights to test that dedup logic.
+        client.put_item(TableName=ANKIENTITIES_TABLE,
+                        Item=item
+                        )
+
         yield s3, KINDLE_HIGHLIGHTS_TABLE, ANKIENTITIES_TABLE
 
 
@@ -110,6 +156,3 @@ def test_lambda_ingest_from_s3(lambda_environment, create_aws_resources):
 
     for foreign_id in foreign_ids:
         assert foreign_id in dynamo_foreign_ids_data
-
-    # TODO: Add support for testing the dedup logic
-

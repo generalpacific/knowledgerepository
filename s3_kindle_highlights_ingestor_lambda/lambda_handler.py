@@ -48,6 +48,7 @@ def __put_highlights_in_db(highlight_data):
         title = highlight['title']
         if title not in current_title_to_highlight_map:
             current_title_to_highlight_map[title] = __get_highlights(title)
+    print(current_title_to_highlight_map)
     for highlight in highlight_data:
         if highlight['highlight'] in current_title_to_highlight_map[highlight['title']]:
             continue
@@ -149,6 +150,5 @@ def __get_highlights(title):
         if 'Items' in response:
             items = response['Items']
             for item in items:
-                return_highlights.add(item['highlight'])
-        else:
-            return return_highlights
+                return_highlights.add(item['highlight']['S'])
+        return return_highlights

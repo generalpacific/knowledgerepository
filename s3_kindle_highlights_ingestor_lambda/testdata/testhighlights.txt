@@ -18,3 +18,8 @@ We submit our free time to numerical evaluation, interact with algorithmic versi
 
 The Fogg Behavior Model states that for a behavior (B) to occur, three things must be present at the same time: motivation (M), ability (A), and a trigger (T). More succinctly, B = MAT.
 ==========
+﻿Indistractable (Eyal, Nir)
+- Your Highlight on page 94 | Location 2001-2002 | Added on Wednesday, August 10, 2022 7:59:22 AM
+
+Expected highlight that is already in dynamodb
+==========
