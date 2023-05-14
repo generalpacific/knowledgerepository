@@ -114,24 +114,32 @@ def __parse_highlights(content):
     data = []
 
     for highlight_data in content:
-        lines = highlight_data.strip().split('\n')
-
-        title_author = lines[0].strip()
-        metadata = lines[1].strip().lstrip('- ')
-        highlight = lines[3].strip()
-        for k in range(4, len(lines)):
-            highlight = highlight + " " + lines[k]
-
         try:
-            title, author = title_author.rsplit(' (', 1)
-            author = author[:-1]  # Remove the trailing ')'
-        except ValueError as e:
-            print("ValueError for " + title_author)
-            raise e
+            lines = highlight_data.strip().split('\n')
+            if len(lines) < 4:
+                print("Not enough lines to parse: " + highlight_data)
+                continue
 
-        data.append({'title': title, 'author': author,
-                     'metadata': metadata,
-                     'highlight': highlight})
+            title_author = lines[0].strip()
+            metadata = lines[1].strip().lstrip('- ')
+            highlight = lines[3].strip()
+            for k in range(4, len(lines)):
+                highlight = highlight + " " + lines[k]
+
+            try:
+                title, author = title_author.rsplit(' (', 1)
+                author = author[:-1]  # Remove the trailing ')'
+            except ValueError as e:
+                print("ValueError for " + title_author)
+                title = title_author
+                author = ""
+
+            data.append({'title': title, 'author': author,
+                         'metadata': metadata,
+                         'highlight': highlight})
+        except IndexError as e:
+            print("Index error for: " + highlight_data)
+            raise e
 
     return data
 
