@@ -8,7 +8,6 @@ from pprint import pprint
 
 import boto3
 import dateutil.tz
-import tweepy
 from botocore.exceptions import ClientError
 
 RETRY_EXCEPTIONS = ('ProvisionedThroughputExceededException',
@@ -94,7 +93,7 @@ def __put_highlight_in_db(title, author, highlight, metadata):
                     'entityid': entity_id,
                     'foreign_id': highlight_entity_id,
                     'source': 'KINDLE',
-                    'recallweight': 0,
+                    'recallweight': "0",
                     'create_time': str(date_str)
                 }
             )
