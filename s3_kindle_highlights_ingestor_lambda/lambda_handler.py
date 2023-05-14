@@ -1,14 +1,13 @@
+import boto3
 import datetime
+import dateutil.tz
 import json
 import os
 import random
 import string
 import uuid
-from pprint import pprint
-
-import boto3
-import dateutil.tz
 from botocore.exceptions import ClientError
+from pprint import pprint
 
 RETRY_EXCEPTIONS = ('ProvisionedThroughputExceededException',
                     'ThrottlingException')
@@ -108,28 +107,32 @@ def __put_highlight_in_db(title, author, highlight, metadata):
 
 def __parse_highlights(content):
     content = content.replace('\ufeff', '')
-    lines = content.split('\n')
-    data = []
-    print('Number of lines read: ', len(lines))
-    for i in range(0, len(lines), 5):
-        if i == len(lines) - 1:
-            break
-        title_author = lines[i].strip()
-        metadata = lines[i + 1].strip().lstrip('- ')
-        highlight = lines[i + 3].strip()
 
-        title = ""
-        author = ""
-        if " (" in title_author:
-            title, author = title_author.split(' (')
-            author = author[:-1]
-        else:
-            title = title_author
-            author = ""
+    content = content.split('==========')
+    print("Number of highlights: " + str(len(content)))
+
+    data = []
+
+    for highlight_data in content:
+        lines = highlight_data.strip().split('\n')
+
+        title_author = lines[0].strip()
+        metadata = lines[1].strip().lstrip('- ')
+        highlight = lines[3].strip()
+        for k in range(4, len(lines)):
+            highlight = highlight + " " + lines[k]
+
+        try:
+            title, author = title_author.rsplit(' (', 1)
+            author = author[:-1]  # Remove the trailing ')'
+        except ValueError as e:
+            print("ValueError for " + title_author)
+            raise e
 
         data.append({'title': title, 'author': author,
                      'metadata': metadata,
                      'highlight': highlight})
+
     return data
 
 
