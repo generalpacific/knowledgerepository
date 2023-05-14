@@ -13,6 +13,10 @@ zip -r newlayer.zip python/
 # APi Gateway
 * Use lambda proxy integration to pass the parameters from the api
 
+## Makeing API gateway return binary data
+* Set the binary type to "\*/\*" in the API settings policy. 
+* See the stack overflow: https://stackoverflow.com/questions/35804042/aws-api-gateway-and-lambda-to-return-image
+
 # Lambda Layer
 * Install all dependencies needed in the lambda to the new layer to avoid any
   conflict in dependencies between lambda default dependencies 

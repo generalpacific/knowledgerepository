@@ -10,6 +10,9 @@ const Navbar = () => {
           <NavLink to="/knowledgedailydigest" activeStyle>
             Knowledge Daily Digest
           </NavLink>
+          <NavLink to="/artoftheday" activeStyle>
+            Art Of The Day
+          </NavLink>
         </NavMenu>
       </Nav>
     </>
