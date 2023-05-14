@@ -6,6 +6,7 @@ import os
 import random
 import string
 import uuid
+import time
 from botocore.exceptions import ClientError
 from pprint import pprint
 
@@ -79,7 +80,7 @@ def __put_highlight_in_db(title, author, highlight, metadata):
         except ClientError as err:
             if err.response['Error']['Code'] not in RETRY_EXCEPTIONS:
                 raise
-            sleep(2 ** retries)
+            time.sleep(2 ** retries)
             retries += 1
 
     table = dyndb.Table(os.environ['ANKIENTITIES_TABLE'])
@@ -100,7 +101,7 @@ def __put_highlight_in_db(title, author, highlight, metadata):
         except ClientError as err:
             if err.response['Error']['Code'] not in RETRY_EXCEPTIONS:
                 raise
-            sleep(1. ** retries)
+            time.sleep(1. ** retries)
             retries += 1
     print("Added highlight id: " + highlight_entity_id + " new entity_id: " + entity_id)
 
