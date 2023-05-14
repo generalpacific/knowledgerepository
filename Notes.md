@@ -10,4 +10,11 @@ pip3 install <python library> -t python
 zip -r newlayer.zip python/
 ```
 
+# APi Gateway
+* Use lambda proxy integration to pass the parameters from the api
+
+# Lambda Layer
+* Install all dependencies needed in the lambda to the new layer to avoid any
+  conflict in dependencies between lambda default dependencies 
+  and the new layer.
 
