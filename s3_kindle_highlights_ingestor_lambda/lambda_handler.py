@@ -92,7 +92,7 @@ def __put_highlight_in_db(title, author, highlight, metadata):
                     'entityid': entity_id,
                     'foreign_id': highlight_entity_id,
                     'source': 'KINDLE',
-                    'recallweight': "0",
+                    'recallweight': 0,
                     'create_time': str(date_str)
                 }
             )
