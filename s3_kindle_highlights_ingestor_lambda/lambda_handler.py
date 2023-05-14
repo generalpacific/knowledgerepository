@@ -118,8 +118,14 @@ def __parse_highlights(content):
         metadata = lines[i + 1].strip().lstrip('- ')
         highlight = lines[i + 3].strip()
 
-        title, author = title_author.split(' (')
-        author = author[:-1]  # Remove the trailing ')'
+        title = ""
+        author = ""
+        if " (" in title_author:
+            title, author = title_author.split(' (')
+            author = author[:-1]
+        else:
+            title = title_author
+            author = ""
 
         data.append({'title': title, 'author': author,
                      'metadata': metadata,
