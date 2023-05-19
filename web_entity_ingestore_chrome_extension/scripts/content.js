@@ -19,22 +19,19 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
   console.log("Got msg from popup")
   // First, validate the message's structure.
   if ((msg.from === 'popup') && (msg.subject === 'DOMInfo')) {
-    // Collect the necessary data.
-    const highlightElems = document.querySelectorAll('.kp-notebook-highlight');
-    const highlights = [];
-    const bookTitleElement = document.querySelectorAll('.kp-notebook-metadata');
+    // Retrieve the highlighted text
+    const highlightedText = window.getSelection().toString();
 
-    for (let i = 0; i < highlightElems.length; i++) {
-      const highlight = {};
-
-      highlight.text = highlightElems[i].querySelector('.a-size-base-plus').textContent.trim();
-      highlights.push(highlight)
-    }
-    console.log('Book: ' + JSON.stringify(highlights))
-
-    var domInfo = {
-      library: highlights
-    };
+    // Retrieve the webpage title and URL
+    const pageTitle = document.title;
+    const pageUrl = window.location.href;
+    
+    // Create the domInfo object with the highlighted text
+    const domInfo = {
+      highlightedText: highlightedText,
+      pageTitle: pageTitle,
+      pageUrl: pageUrl,
+    }; 
 
     // Directly respond to the sender (popup),
     // through the specified callback.

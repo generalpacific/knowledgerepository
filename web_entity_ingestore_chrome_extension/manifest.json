@@ -6,9 +6,7 @@
   "content_scripts": [
     {
       "js": ["scripts/content.js"],
-      "matches": [
-        "https://read.amazon.com/notebook"
-      ],
+      "matches": ["<all_urls>"],
       "run_at": "document_idle",
       "all_frames": false
     }

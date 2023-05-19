@@ -1,7 +1,9 @@
 // Update the relevant fields with the new data.
 const setDOMInfo = info => {
-  console.log("Got info: " + info)
-  document.getElementById('library').textContent = JSON.stringify(info.library);
+  console.log("Got info: " + JSON.stringify(info))
+  document.getElementById('highlighted_entity').textContent = info.highlightedText;
+  document.getElementById('entity_title').textContent = info.pageTitle;
+  document.getElementById('entity_source').textContent = info.pageUrl;
 };
 
 // Once the DOM is ready...
