@@ -61,3 +61,18 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: S3KindleHighlightsIngestorLambda
           source: s3_kindle_highlights_ingestor_lambda/lambda_handler.py
+  
+  send_email_digest_lambda:
+    name: Deploy AnkiFetchLikedTweets 
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout source code
+        uses: actions/checkout@v3
+      - name: default deploy
+        uses: appleboy/lambda-action@v0.1.9
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          function_name: AnkiFetchLikedTweets
+          source: send_email_digest_lambda/lambda_function.py
