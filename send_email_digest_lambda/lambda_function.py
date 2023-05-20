@@ -1,14 +1,15 @@
-import json, os
-import tweepy
+import boto3
+import json
+import os
 import random
 import string
-from decimal import Decimal
-import boto3
 import time
+import tweepy
 from boto3.dynamodb.conditions import Key
-from pprint import pprint
 from botocore.exceptions import ClientError
 from datetime import date
+from decimal import Decimal
+from pprint import pprint
 
 CONSUMER_KEY = os.environ['CONSUMER_KEY']
 CONSUMER_SECRET = os.environ['CONSUMER_SECRET']
@@ -209,7 +210,7 @@ def lambda_handler(event, context):
     kindle_ids = get_foreign_ids(digest_json['KINDLE'])
     highlights_string = get_highlights_string(kindle_ids)
 
-    digest_link = "<a href='generalpacific.link'>Link to digest</a><br><a href='https://master.dcz6fmdennwso.amplifyapp.com	'>alternate link</a><br><br><b>"
+    digest_link = "<a href='generalpacific.link'>Link to digest</a><br><br><br><b>"
     send_email('KnowledgeAnki: Todays Summary.', digest_link + highlights_string + tweet_string + quote_string,
                TO_EMAIL)
     return {
