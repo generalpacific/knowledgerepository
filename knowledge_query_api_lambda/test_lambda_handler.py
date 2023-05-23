@@ -1,15 +1,14 @@
-import datetime
-import json
-import os
-import unittest
-from unittest.mock import patch, MagicMock
-
 import boto3
+import datetime
 import dateutil.tz
+import json
 import lambda_handler
 import mock
 import moto
+import os
 import pytest
+import unittest
+from unittest.mock import patch, MagicMock
 
 NOTION_TABLE_NAME = "notion-book-quotes"
 KINDLE_HIGHLIGHTS_TABLE = "kindle-highlights-table"
@@ -151,3 +150,41 @@ def test_lambda_daily_digest(lambda_environment, populate_dynamodb_table_with_da
     """Tests the lambda function for getting highlights for title"""
 
     # TODO: add unit tests
+
+
+def test_lambda_handler_no_query_string_parameters():
+    event = {}
+
+    response = lambda_handler.lambda_handler(event, None)
+
+    assert response['statusCode'] == 400
+    assert response['body'] == "No queryStringParameters in event"
+
+
+def test_lambda_handler_none_query_string_parameters():
+    event = {'queryStringParameters': None}
+
+    response = lambda_handler.lambda_handler(event, None)
+
+    assert response['statusCode'] == 400
+    assert response['body'] == "queryStringParameters in event is none"
+
+
+def test_lambda_handler_no_source():
+    event = {'queryStringParameters': {}}
+
+    response = lambda_handler.lambda_handler(event, None)
+
+    assert response['statusCode'] == 400
+    assert response[
+               'body'] == "No source in event[queryStringParameters]. Provide source for which you need entities for."
+
+
+def test_lambda_handler_no_title():
+    event = {'queryStringParameters': {'source': 'KINDLE'}}
+
+    response = lambda_handler.lambda_handler(event, None)
+
+    assert response['statusCode'] == 400
+    assert response[
+               'body'] == "No title in event[queryStringParameters]. Provide title for which you need entities for."

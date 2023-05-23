@@ -45,7 +45,7 @@ def lambda_handler(event, context):
     if 'queryStringParameters' not in event:
         print("No queryStringParameters in event")
         return {
-            'statusCode': '400',
+            'statusCode': 400,
             'body': "No queryStringParameters in event",
             'headers': {
                 'Access-Control-Allow-Origin': '*',
@@ -55,7 +55,7 @@ def lambda_handler(event, context):
     if event['queryStringParameters'] is None:
         print("queryStringParameters in event is none")
         return {
-            'statusCode': '400',
+            'statusCode': 400,
             'body': "queryStringParameters in event is none",
             'headers': {
                 'Access-Control-Allow-Origin': '*',
@@ -67,7 +67,7 @@ def lambda_handler(event, context):
     if 'source' not in query_string_parameters:
         print("No source in event[queryStringParameters]")
         return {
-            'statusCode': '400',
+            'statusCode': 400,
             'body': "No source in event[queryStringParameters]. Provide source for which you need entities for.",
             'headers': {
                 'Access-Control-Allow-Origin': '*',
@@ -78,7 +78,7 @@ def lambda_handler(event, context):
     if 'title' not in query_string_parameters:
         print("No title in event[queryStringParameters]")
         return {
-            'statusCode': '400',
+            'statusCode': 400,
             'body': "No title in event[queryStringParameters]. Provide title for which you need entities for.",
             'headers': {
                 'Access-Control-Allow-Origin': '*',
