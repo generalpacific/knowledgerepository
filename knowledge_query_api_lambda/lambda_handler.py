@@ -89,6 +89,7 @@ def lambda_handler(event, context):
     dynamodb = boto3.client('dynamodb')
 
     entities = __get_entities(dynamodb, source, title)
+    print("Returning " + str(len(entities)) + " for " + title)
 
     return {
         'statusCode': 200,
