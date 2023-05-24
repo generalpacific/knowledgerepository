@@ -19,14 +19,6 @@ DAILY_DIGEST_ID_TEST_DATA = {"TWITTER": ["1", "2"],
                              "KINDLE": ["3", "4"], "NOTION": ["5", "6"]
                              }
 
-EXPECTED_DAILY_DIGEST_TEST_DATA = {"digest": [
-    {"entityid": "5", "title": "title5", "author": "author5", "quote": "quote5", "plusones": "12"},
-    {"entityid": "4", "title": "title4", "author": "author4", "highlight": "highlight4", "plusones": "12"},
-    {"entityid": "1", "tweet_id": "tweetid1", "plusones": "12"},
-    {"entityid": "6", "title": "title6", "author": "author6", "quote": "quote6", "plusones": "12"},
-    {"entityid": "2", "tweet_id": "tweetid2", "plusones": "12"},
-    {"entityid": "3", "title": "title3", "author": "author3", "highlight": "highlight3", "plusones": "12"}]}
-
 
 @pytest.fixture
 def lambda_environment():
@@ -76,11 +68,27 @@ def create_dynamodb_tables():
 
         client.create_table(
             AttributeDefinitions=[
-                {"AttributeName": "id", "AttributeType": "S"}
+                {"AttributeName": "id", "AttributeType": "S"},
+                {"AttributeName": "tite", "AttributeType": "S"}
             ],
             TableName=KINDLE_HIGHLIGHTS_TABLE,
             KeySchema=[
                 {"AttributeName": "id", "KeyType": "HASH"}
+            ],
+            GlobalSecondaryIndexes=[
+                {
+                    "IndexName": "tite-index",
+                    "KeySchema": [
+                        {"AttributeName": "tite", "KeyType": "HASH"}
+                    ],
+                    "Projection": {
+                        "ProjectionType": "ALL"
+                    },
+                    "ProvisionedThroughput": {
+                        "ReadCapacityUnits": 5,
+                        "WriteCapacityUnits": 5
+                    }
+                }
             ],
             BillingMode="PAY_PER_REQUEST"
         )
@@ -136,20 +144,26 @@ def populate_dynamodb_table_with_data(create_dynamodb_tables):
 
 
 ## Tests start here.
-
-def ordered(obj):
-    if isinstance(obj, dict):
-        return sorted((k, ordered(v)) for k, v in obj.items())
-    if isinstance(obj, list):
-        return sorted(ordered(x) for x in obj)
-    else:
-        return obj
-
-
-def test_lambda_daily_digest(lambda_environment, populate_dynamodb_table_with_data):
+def test_knowledge_query(lambda_environment, populate_dynamodb_table_with_data):
     """Tests the lambda function for getting highlights for title"""
+    event = {'queryStringParameters': {'source': 'KINDLE', 'title': 'title3'}}
 
-    # TODO: add unit tests
+    response = lambda_handler.lambda_handler(event, None)
+
+    assert response['statusCode'] == 200
+    assert response['headers']['Content-Type'] == 'application/json'
+    assert response['headers']['Access-Control-Allow-Headers'] == 'Content-Type'
+    assert response['headers']['Access-Control-Allow-Origin'] == '*'
+    assert response['headers']['Access-Control-Allow-Methods'] == 'OPTIONS,POST,GET'
+
+    # Check if the response body is a valid JSON string
+    try:
+        entities = json.loads(response['body'])
+    except json.JSONDecodeError:
+        self.fail("Response body is not a valid JSON string")
+
+    # Additional assertions for the entities if needed
+    assert entities == ["highlight3"]
 
 
 def test_lambda_handler_no_query_string_parameters():

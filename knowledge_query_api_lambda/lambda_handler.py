@@ -28,7 +28,7 @@ def __get_entities(dynamodb, source, title):
         }
 
         # Query the table using the GSI on the title column
-        response = dyndb.query(**query_params)
+        response = dynamodb.query(**query_params)
     except ClientError as e:
         print("ERROR while getting latest quote. Returning empty. Error: " +
               e.response['Error']['Message'])
@@ -92,7 +92,7 @@ def lambda_handler(event, context):
 
     return {
         'statusCode': 200,
-        'body': json.dumps(entities),
+        'body': json.dumps(list(entities)),
         'headers': {
             "Content-Type": "application/json",
             'Access-Control-Allow-Headers': 'Content-Type',
