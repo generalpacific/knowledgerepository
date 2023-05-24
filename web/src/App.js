@@ -16,7 +16,7 @@ return (
         <Route exact path='/' exact element={<Home />} />
         <Route path='/knowledgedailydigest' element={<KnowledgeDailyDigest />} />
         <Route path='/artoftheday' element={<ArtOfTheDay />} />
-        <Route path='/knowledgequery:title' element={<KnowledgeQuery />} />
+        <Route path='/knowledgequery' element={<KnowledgeQuery />} />
     </Routes>
     </Router>
 );

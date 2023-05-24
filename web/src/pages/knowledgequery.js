@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import "../App.css";
 
 const FetchKnowledge = (title) => {
@@ -6,11 +7,12 @@ const FetchKnowledge = (title) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     setIsLoading(true);
+    const queryString = encodeURIComponent(title["title"]);
     fetch(
-      "https://9xj3ly8j6i.execute-api.us-east-2.amazonaws.com/prod/knowledgequery?title=" +
-        title
+      "https://9xj3ly8j6i.execute-api.us-east-2.amazonaws.com/prod/knowledgequery?source=KINDLE&title=" +
+        queryString
     )
       .then((response) => {
         if (response.ok) {
@@ -20,6 +22,7 @@ const FetchKnowledge = (title) => {
         }
       })
       .then((data) => {
+        console.info("Got data");
         setResult(data);
         setIsLoading(false);
       })
@@ -28,11 +31,11 @@ const FetchKnowledge = (title) => {
         setIsLoading(false);
         console.error(error);
       });
-  };
+  }, [title]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
     <div>
@@ -41,17 +44,24 @@ const FetchKnowledge = (title) => {
       {!isLoading && !error && (
         <div>
           <h1> Highlights: </h1>
-          {result}
+          <h2> Title: {title.title} </h2>
+          {result.map((item, index) => (
+            <p key={index}>{item}</p>
+          ))}
         </div>
       )}
     </div>
   );
 };
 
-export default function KnowledgeQuery(props) {
+export default function KnowledgeQuery() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const title = queryParams.get("title");
+
   return (
     <div>
-      <FetchKnowledge title={props.match.params.title} />
+      <FetchKnowledge title={title} />
     </div>
   );
 }

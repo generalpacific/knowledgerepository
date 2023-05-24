@@ -118,13 +118,15 @@ const FetchDigest = () => {
                     </Tooltip>
                   </td>
                   <td>
-                    <a
-                      href={`/knowledgequery?title=${encodeURIComponent(
-                        data.title
-                      )}`}
-                    >
-                      More entities for title
-                    </a>
+                    {data["highlight"] !== undefined && (
+                      <a
+                        href={`/knowledgequery?title=${encodeURIComponent(
+                          data.title
+                        )}`}
+                      >
+                        More entities for title
+                      </a>
+                    )}
                   </td>
                 </tr>
               );
