@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route}
 import Home from './pages';
 import KnowledgeDailyDigest from './pages/knowledgedailydigest';
 import ArtOfTheDay from './pages/artoftheday';
+import KnowledgeQuery from './pages/knowledgequery';
   
 function App() {
 return (
@@ -15,6 +16,7 @@ return (
         <Route exact path='/' exact element={<Home />} />
         <Route path='/knowledgedailydigest' element={<KnowledgeDailyDigest />} />
         <Route path='/artoftheday' element={<ArtOfTheDay />} />
+        <Route path='/knowledgequery:title' element={<KnowledgeQuery />} />
     </Routes>
     </Router>
 );

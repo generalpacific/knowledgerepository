@@ -77,7 +77,7 @@ const FetchDigest = () => {
       {error && <p>{error}</p>}
       {plusOneStatus && <p>{plusOneStatus}</p>}
       {isLoading && <p>Loading...</p>}
-      {digestLoadtime != -1 && <p>Loaded page in {digestLoadtime}ms</p>}
+      {digestLoadtime !== -1 && <p>Loaded page in {digestLoadtime}ms</p>}
       {!isLoading && !error && (
         <div>
           <h1> Digest: </h1>
@@ -116,6 +116,15 @@ const FetchDigest = () => {
                     <Tooltip title={GetTooltip(data)} placement="top-start">
                       <button>Hover for info!</button>
                     </Tooltip>
+                  </td>
+                  <td>
+                    <a
+                      href={`/knowledgequery?title=${encodeURIComponent(
+                        data.title
+                      )}`}
+                    >
+                      More entities for title
+                    </a>
                   </td>
                 </tr>
               );
