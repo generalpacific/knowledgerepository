@@ -2,17 +2,20 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import "../App.css";
 
-const FetchKnowledge = (title) => {
+const FetchKnowledge = ({ title, source }) => {
   const [result, setResult] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = useCallback(() => {
     setIsLoading(true);
-    const queryString = encodeURIComponent(title["title"]);
+    const titleString = encodeURIComponent(title);
+    const sourceString = encodeURIComponent(source);
     fetch(
-      "https://9xj3ly8j6i.execute-api.us-east-2.amazonaws.com/prod/knowledgequery?source=KINDLE&title=" +
-        queryString
+      "https://9xj3ly8j6i.execute-api.us-east-2.amazonaws.com/prod/knowledgequery?source=" +
+        sourceString +
+        "&title=" +
+        titleString
     )
       .then((response) => {
         if (response.ok) {
@@ -31,7 +34,7 @@ const FetchKnowledge = (title) => {
         setIsLoading(false);
         console.error(error);
       });
-  }, [title]);
+  }, [title, source]);
 
   useEffect(() => {
     fetchData();
@@ -58,10 +61,11 @@ export default function KnowledgeQuery() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const title = queryParams.get("title");
+  const source = queryParams.get("source");
 
   return (
     <div>
-      <FetchKnowledge title={title} />
+      <FetchKnowledge title={title} source={source} />
     </div>
   );
 }
