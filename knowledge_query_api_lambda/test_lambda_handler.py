@@ -57,11 +57,27 @@ def create_dynamodb_tables():
 
         client.create_table(
             AttributeDefinitions=[
-                {"AttributeName": "id", "AttributeType": "S"}
+                {"AttributeName": "id", "AttributeType": "S"},
+                {"AttributeName": "tite", "AttributeType": "S"}
             ],
             TableName=NOTION_TABLE_NAME,
             KeySchema=[
                 {"AttributeName": "id", "KeyType": "HASH"}
+            ],
+            GlobalSecondaryIndexes=[
+                {
+                    "IndexName": "tite-index",
+                    "KeySchema": [
+                        {"AttributeName": "tite", "KeyType": "HASH"}
+                    ],
+                    "Projection": {
+                        "ProjectionType": "ALL"
+                    },
+                    "ProvisionedThroughput": {
+                        "ReadCapacityUnits": 5,
+                        "WriteCapacityUnits": 5
+                    }
+                }
             ],
             BillingMode="PAY_PER_REQUEST"
         )
@@ -144,8 +160,8 @@ def populate_dynamodb_table_with_data(create_dynamodb_tables):
 
 
 ## Tests start here.
-def test_knowledge_query(lambda_environment, populate_dynamodb_table_with_data):
-    """Tests the lambda function for getting highlights for title"""
+def test_knowledge_query_kindle(lambda_environment, populate_dynamodb_table_with_data):
+    """Tests the lambda function for getting kindle highlights for title"""
     event = {'queryStringParameters': {'source': 'KINDLE', 'title': 'title3'}}
 
     response = lambda_handler.lambda_handler(event, None)
@@ -164,6 +180,28 @@ def test_knowledge_query(lambda_environment, populate_dynamodb_table_with_data):
 
     # Additional assertions for the entities if needed
     assert entities == ["highlight3"]
+
+
+def test_knowledge_query_notion(lambda_environment, populate_dynamodb_table_with_data):
+    """Tests the lambda function for getting notion highlights for title"""
+    event = {'queryStringParameters': {'source': 'NOTION', 'title': 'title5'}}
+
+    response = lambda_handler.lambda_handler(event, None)
+
+    assert response['statusCode'] == 200
+    assert response['headers']['Content-Type'] == 'application/json'
+    assert response['headers']['Access-Control-Allow-Headers'] == 'Content-Type'
+    assert response['headers']['Access-Control-Allow-Origin'] == '*'
+    assert response['headers']['Access-Control-Allow-Methods'] == 'OPTIONS,POST,GET'
+
+    # Check if the response body is a valid JSON string
+    try:
+        entities = json.loads(response['body'])
+    except json.JSONDecodeError:
+        self.fail("Response body is not a valid JSON string")
+
+    # Additional assertions for the entities if needed
+    assert entities == ["quote5"]
 
 
 def test_lambda_handler_no_query_string_parameters():

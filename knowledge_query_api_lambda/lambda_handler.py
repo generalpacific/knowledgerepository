@@ -30,14 +30,17 @@ def __get_entities(dynamodb, source, title):
         # Query the table using the GSI on the title column
         response = dynamodb.query(**query_params)
     except ClientError as e:
-        print("ERROR while getting latest quote. Returning empty. Error: " +
+        print("ERROR while getting latest quote. Error: " +
               e.response['Error']['Message'])
-        return return_highlights
+        raise e
     else:
         if 'Items' in response:
             items = response['Items']
             for item in items:
-                return_highlights.add(item['highlight']['S'])
+                if source == 'KINDLE':
+                    return_highlights.add(item['highlight']['S'])
+                elif source == 'NOTION':
+                    return_highlights.add(item['quote']['S'])
         return return_highlights
 
 
