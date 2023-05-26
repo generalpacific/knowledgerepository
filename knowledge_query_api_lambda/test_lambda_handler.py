@@ -204,6 +204,16 @@ def test_knowledge_query_notion(lambda_environment, populate_dynamodb_table_with
     assert entities == ["quote5"]
 
 
+def test_knowledge_query_unknown_source(lambda_environment, populate_dynamodb_table_with_data):
+    """Tests the lambda function for getting notion highlights for title"""
+    event = {'queryStringParameters': {'source': 'TWEETER', 'title': 'title5'}}
+
+    with pytest.raises(ValueError) as exec_info:
+        lambda_handler.lambda_handler(event, None)
+
+    assert str(exec_info.value) == "Illegal source TWEETER"
+
+
 def test_lambda_handler_no_query_string_parameters():
     event = {}
 

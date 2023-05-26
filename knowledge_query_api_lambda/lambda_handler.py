@@ -13,7 +13,7 @@ def __get_entities(dynamodb, source, title):
     elif source == 'NOTION':
         table = os.environ['NOTION_BOOK_QUOTES_TABLE']
     else:
-        raise ClientError("Illegal source", source)
+        raise ValueError("Illegal source " + source)
 
     return_highlights = set()
     try:
