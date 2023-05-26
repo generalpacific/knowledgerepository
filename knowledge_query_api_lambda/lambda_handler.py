@@ -7,6 +7,26 @@ import random
 from botocore.exceptions import ClientError
 
 
+def __get_plus_ones(dynamodb, foreign_ids):
+    table_name = os.environ['ANKIENTITIES_TABLE']
+
+    plus_ones = {}
+    for foreign_id in foreign_ids:
+        response = dynamodb.scan(
+            TableName=table_name,
+            ProjectionExpression='foreign_id, plus_one',
+            FilterExpression='foreign_id = :id',
+            ExpressionAttributeValues={':id': {'S': foreign_id}}
+        )
+
+        for item in response['Items']:
+            foreign_id = item['foreign_id']['S']
+            plus_ones_value = item.get('plus_one', {'N': '0'})['N']
+            plus_ones[foreign_id] = int(plus_ones_value)
+
+    return plus_ones
+
+
 def __get_entities(dynamodb, source, title):
     if source == 'KINDLE':
         table = os.environ['KINDLE_HIGHLIGHTS_TABLE']
@@ -15,7 +35,7 @@ def __get_entities(dynamodb, source, title):
     else:
         raise ValueError("Illegal source " + source)
 
-    return_highlights = set()
+    return_highlights = []
     try:
         # Set up the Query parameters
         query_params = {
@@ -36,11 +56,18 @@ def __get_entities(dynamodb, source, title):
     else:
         if 'Items' in response:
             items = response['Items']
+
+            foreign_ids = []
+            for item in items:
+                foreign_ids.append(item['id']['S'])
+
+            foreign_ids_to_plus_ones = __get_plus_ones(dynamodb, foreign_ids)
+
             for item in items:
                 if source == 'KINDLE':
-                    return_highlights.add(item['highlight']['S'])
+                    return_highlights.append((item['highlight']['S'], foreign_ids_to_plus_ones[item['id']['S']]))
                 elif source == 'NOTION':
-                    return_highlights.add(item['quote']['S'])
+                    return_highlights.append((item['quote']['S'], foreign_ids_to_plus_ones[item['id']['S']]))
         return return_highlights
 
 
@@ -92,6 +119,7 @@ def lambda_handler(event, context):
     dynamodb = boto3.client('dynamodb')
 
     entities = __get_entities(dynamodb, source, title)
+    print(str(entities))
     print("Returning " + str(len(entities)) + " for " + title)
 
     return {

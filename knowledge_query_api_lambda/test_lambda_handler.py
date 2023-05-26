@@ -130,12 +130,12 @@ def populate_dynamodb_table_with_data(create_dynamodb_tables):
     table = boto3.resource("dynamodb").Table(ANKIENTITIES_TABLE)
     print("Adding data to anki entities table")
     txs = [
-        {"entityid": "1", "foreign_id": "tweetid1", "source": "TWITTER", "plus_one": "12"},
-        {"entityid": "2", "foreign_id": "tweetid2", "source": "TWITTER", "plus_one": "12"},
-        {"entityid": "3", "foreign_id": "kindle3", "source": "KINDLE", "plus_one": "12"},
-        {"entityid": "4", "foreign_id": "kindle4", "source": "KINDLE", "plus_one": "12"},
-        {"entityid": "5", "foreign_id": "notion5", "source": "NOTION", "plus_one": "12"},
-        {"entityid": "6", "foreign_id": "notion6", "source": "NOTION", "plus_one": "12"},
+        {"entityid": "1", "foreign_id": "tweetid1", "source": "TWITTER", "plus_one": 12},
+        {"entityid": "2", "foreign_id": "tweetid2", "source": "TWITTER", "plus_one": 13},
+        {"entityid": "3", "foreign_id": "kindle3", "source": "KINDLE", "plus_one": 14},
+        {"entityid": "4", "foreign_id": "kindle4", "source": "KINDLE", "plus_one": 15},
+        {"entityid": "5", "foreign_id": "notion5", "source": "NOTION", "plus_one": 16},
+        {"entityid": "6", "foreign_id": "notion6", "source": "NOTION", "plus_one": 17},
     ]
     for tx in txs:
         table.put_item(Item=tx)
@@ -179,7 +179,7 @@ def test_knowledge_query_kindle(lambda_environment, populate_dynamodb_table_with
         self.fail("Response body is not a valid JSON string")
 
     # Additional assertions for the entities if needed
-    assert entities == ["highlight3"]
+    assert entities == [["highlight3", 14]]
 
 
 def test_knowledge_query_notion(lambda_environment, populate_dynamodb_table_with_data):
@@ -201,7 +201,7 @@ def test_knowledge_query_notion(lambda_environment, populate_dynamodb_table_with
         self.fail("Response body is not a valid JSON string")
 
     # Additional assertions for the entities if needed
-    assert entities == ["quote5"]
+    assert entities == [["quote5", 16]]
 
 
 def test_knowledge_query_unknown_source(lambda_environment, populate_dynamodb_table_with_data):
