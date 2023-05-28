@@ -48,9 +48,13 @@ const FetchKnowledge = ({ title, source }) => {
         <div>
           <h1> Highlights: </h1>
           <h2> Title: {title.title} </h2>
-          {result.map((item, index) => (
-            <p key={index}>{item}</p>
-          ))}
+          {result
+            .sort((a, b) => b[1] - a[1])
+            .map((item, index) => (
+              <p key={index} style={{ fontSize: 15 + 2 * item[1] }}>
+                {item[0]}
+              </p>
+            ))}
         </div>
       )}
     </div>
