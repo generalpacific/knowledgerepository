@@ -26,6 +26,7 @@ def __get_plus_ones(dynamodb, foreign_ids):
             plus_ones_value = item.get('plus_one', {'N': '0'})['N']
             plus_ones[foreign_id] = int(plus_ones_value)
 
+    print("foreign_ids.size: " + str(len(foreign_ids)) + " result size: " + str(len(plus_ones)))
     return plus_ones
 
 
@@ -66,10 +67,13 @@ def __get_entities(dynamodb, source, title):
             foreign_ids_to_plus_ones = __get_plus_ones(dynamodb, foreign_ids)
 
             for item in items:
+                plus_ones = 0
+                if item['id']['S'] in foreign_ids_to_plus_ones:
+                    plus_ones = foreign_ids_to_plus_ones[item['id']['S']]
                 if source == 'KINDLE':
-                    return_highlights.append((item['highlight']['S'], foreign_ids_to_plus_ones[item['id']['S']]))
+                    return_highlights.append((item['highlight']['S'], plus_ones))
                 elif source == 'NOTION':
-                    return_highlights.append((item['quote']['S'], foreign_ids_to_plus_ones[item['id']['S']]))
+                    return_highlights.append((item['quote']['S'], plus_ones))
         return return_highlights
 
 
