@@ -13,12 +13,12 @@ def __get_plus_ones(dynamodb, foreign_ids):
 
     plus_ones = {}
     for foreign_id in foreign_ids:
-        response = dynamodb.scan(
+        response = dynamodb.query(
             TableName=table_name,
             IndexName=index_name,
-            ProjectionExpression='foreign_id, plus_one',
-            FilterExpression='foreign_id = :id',
-            ExpressionAttributeValues={':id': {'S': foreign_id}}
+            KeyConditionExpression='foreign_id = :id',
+            ExpressionAttributeValues={':id': {'S': foreign_id}},
+            ProjectionExpression='foreign_id, plus_one'
         )
 
         for item in response['Items']:
