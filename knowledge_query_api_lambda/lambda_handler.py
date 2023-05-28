@@ -9,11 +9,13 @@ from botocore.exceptions import ClientError
 
 def __get_plus_ones(dynamodb, foreign_ids):
     table_name = os.environ['ANKIENTITIES_TABLE']
+    index_name = 'foreign_id-index'
 
     plus_ones = {}
     for foreign_id in foreign_ids:
         response = dynamodb.scan(
             TableName=table_name,
+            IndexName=index_name,
             ProjectionExpression='foreign_id, plus_one',
             FilterExpression='foreign_id = :id',
             ExpressionAttributeValues={':id': {'S': foreign_id}}

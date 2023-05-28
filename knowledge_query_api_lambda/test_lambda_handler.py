@@ -46,11 +46,27 @@ def create_dynamodb_tables():
 
         client.create_table(
             AttributeDefinitions=[
-                {"AttributeName": "entityid", "AttributeType": "S"}
+                {"AttributeName": "entityid", "AttributeType": "S"},
+                {"AttributeName": "foreign_id", "AttributeType": "S"}
             ],
             TableName=ANKIENTITIES_TABLE,
             KeySchema=[
                 {"AttributeName": "entityid", "KeyType": "HASH"}
+            ],
+            GlobalSecondaryIndexes=[
+                {
+                    "IndexName": "foreign_id-index",
+                    "KeySchema": [
+                        {"AttributeName": "foreign_id", "KeyType": "HASH"}
+                    ],
+                    "Projection": {
+                        "ProjectionType": "ALL"
+                    },
+                    "ProvisionedThroughput": {
+                        "ReadCapacityUnits": 5,
+                        "WriteCapacityUnits": 5
+                    }
+                }
             ],
             BillingMode="PAY_PER_REQUEST"
         )
