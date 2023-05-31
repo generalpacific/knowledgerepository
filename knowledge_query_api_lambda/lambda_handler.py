@@ -6,6 +6,11 @@ import os
 import random
 from botocore.exceptions import ClientError
 
+RETRY_EXCEPTIONS = ('ProvisionedThroughputExceededException',
+                    'ThrottlingException')
+
+MAX_RETRIES = 5
+
 
 def __get_plus_ones(dynamodb, foreign_ids):
     table_name = os.environ['ANKIENTITIES_TABLE']
@@ -13,13 +18,24 @@ def __get_plus_ones(dynamodb, foreign_ids):
 
     plus_ones = {}
     for foreign_id in foreign_ids:
-        response = dynamodb.query(
-            TableName=table_name,
-            IndexName=index_name,
-            KeyConditionExpression='foreign_id = :id',
-            ExpressionAttributeValues={':id': {'S': foreign_id}},
-            ProjectionExpression='foreign_id, plus_one'
-        )
+        retries = 0
+        while True:
+            try:
+                response = dynamodb.query(
+                    TableName=table_name,
+                    IndexName=index_name,
+                    KeyConditionExpression='foreign_id = :id',
+                    ExpressionAttributeValues={':id': {'S': foreign_id}},
+                    ProjectionExpression='foreign_id, plus_one'
+                )
+                break
+            except ClientError as err:
+                if retries >= MAX_RETRIES:
+                    raise Exception("Max retries exceeded.")
+                if err.response['Error']['Code'] not in RETRY_EXCEPTIONS:
+                    raise
+                sleep(2 ** retries)
+                retries += 1
 
         for item in response['Items']:
             foreign_id = item['foreign_id']['S']
