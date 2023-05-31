@@ -47,7 +47,7 @@ const FetchKnowledge = ({ title, source }) => {
       {!isLoading && !error && (
         <div>
           <h1> Highlights: </h1>
-          <h2> Title: {title.title} </h2>
+          <h2> Title: {title} </h2>
           {result
             .sort((a, b) => b[1] - a[1])
             .map((item, index) => (
