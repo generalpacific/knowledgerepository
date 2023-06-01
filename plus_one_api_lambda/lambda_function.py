@@ -16,7 +16,7 @@ def lambda_handler(event, context):
     if 'queryStringParameters' not in event:
         print("No queryStringParameters in event")
         return {
-            'statusCode': '400',
+            'statusCode': 400,
             'body': "No queryStringParameters in event",
             'headers': {
                 'Access-Control-Allow-Origin': '*',
@@ -26,7 +26,7 @@ def lambda_handler(event, context):
     if event['queryStringParameters'] is None:
         print("queryStringParameters in event is none")
         return {
-            'statusCode': '400',
+            'statusCode': 400,
             'body': "queryStringParameters in event is none",
             'headers': {
                 'Access-Control-Allow-Origin': '*',
@@ -36,7 +36,7 @@ def lambda_handler(event, context):
     if 'entityid' not in event['queryStringParameters']:
         print("No id in event[queryStringParameters]")
         return {
-            'statusCode': '400',
+            'statusCode': 400,
             'body': "No id in event[queryStringParameters]",
             'headers': {
                 'Access-Control-Allow-Origin': '*',
@@ -57,7 +57,7 @@ def lambda_handler(event, context):
         print("ERROR while getting quotes: " +
               e.response['Error']['Message'])
         return {
-            'statusCode': '401',
+            'statusCode': 401,
             'body': e.response['Error']['Message'],
             'headers': {
                 'Access-Control-Allow-Origin': '*',
@@ -85,14 +85,14 @@ def lambda_handler(event, context):
                 print("Failed to update plus_one ERROR: " +
                       e.response['Error']['Message'])
                 return {
-                    'statusCode': '401',
+                    'statusCode': 401,
                     'body': e.response['Error']['Message'],
                     'headers': {
                         'Access-Control-Allow-Origin': '*',
                     }
                 }
             return {
-                'statusCode': '200',
+                'statusCode': 200,
                 'body': 'Successfully PlusOned the entity',
                 'headers': {
                     'Access-Control-Allow-Origin': '*',
@@ -100,7 +100,7 @@ def lambda_handler(event, context):
             }
         else:
             return {
-                'statusCode': '404',
+                'statusCode': 404,
                 'body': entity_id + ' Not found',
                 'headers': {
                     'Access-Control-Allow-Origin': '*',
