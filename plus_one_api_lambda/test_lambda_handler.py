@@ -176,9 +176,30 @@ def populate_dynamodb_table_with_data(create_dynamodb_tables):
 
 
 ## Tests start here.
-def test_plus_one(lambda_environment, populate_dynamodb_table_with_data):
-    """Tests the lambda function for getting kindle highlights for title"""
-    # TODO: Add tests
+def test_plus_one_404(lambda_environment, populate_dynamodb_table_with_data):
+    event = {'queryStringParameters': {'entityid': '453425354'}}
+
+    response = lambda_function.lambda_handler(event, None)
+
+    assert response['statusCode'] == 404
+    assert response['body'] == "453425354 Not found"
+
+
+def test_plus_one_success(lambda_environment, populate_dynamodb_table_with_data):
+    event = {'queryStringParameters': {'entityid': '6'}}
+
+    response = lambda_function.lambda_handler(event, None)
+
+    assert response['statusCode'] == 200
+    assert response['body'] == "Successfully PlusOned the entity"
+
+    #### Verify plus one in db
+    dynamodb = boto3.client("dynamodb")
+    response = dynamodb.get_item(TableName=ANKIENTITIES_TABLE, Key={
+        'entityid': {'S': '6'},
+    })
+    dynamodb_data = response['Item']
+    assert dynamodb_data['plus_one']['N'] == '18'
 
 
 def test_lambda_handler_no_query_string_parameters():

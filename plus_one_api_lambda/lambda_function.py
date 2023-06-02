@@ -1,6 +1,7 @@
 import boto3
 import boto3
 import json
+import os
 import time
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
@@ -46,7 +47,7 @@ def lambda_handler(event, context):
     entity_id = event["queryStringParameters"]["entityid"]
 
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('ankientities')
+    table = dynamodb.Table(os.environ['ANKIENTITIES_TABLE'])
 
     try:
         response = table.get_item(Key={
