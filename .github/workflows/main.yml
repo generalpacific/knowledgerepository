@@ -91,3 +91,19 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: KnowledgeQueryAPILambda
           source: knowledge_query_api_lambda/lambda_handler.py
+
+  plus_one_api_lambda:
+    name: Deploy PlusOneAPILambda 
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout source code
+        uses: actions/checkout@v3
+      - name: default deploy
+        uses: appleboy/lambda-action@v0.1.9
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          function_name: PlusOneAPILambda 
+          source: plus_one_api_lambda/lambda_function.py
+
