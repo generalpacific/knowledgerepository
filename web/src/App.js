@@ -6,6 +6,7 @@ import Home from "./pages";
 import KnowledgeDailyDigest from "./pages/knowledgedailydigest";
 import ArtOfTheDay from "./pages/artoftheday";
 import KnowledgeQuery from "./pages/knowledgequery";
+import GoogleLoginButton from './pages/googleloginpage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         />
         <Route path="/artoftheday" element={<ArtOfTheDay />} />
         <Route path="/knowledgequery" element={<KnowledgeQuery />} />
+        <Route path="/googleloginpage" element={<GoogleLoginButton />} />
       </Routes>
     </Router>
   );
