@@ -5,7 +5,7 @@ const PrivateRoute = ({ element: Element, isAuthenticated, ...rest }) => {
   return (
     <Route
       {...rest}
-      element={isAuthenticated ? <Element /> : <Navigate to="/googleloginpage" replace />}
+      element={isAuthenticated ? <Element /> : <Navigate to="/googleloginpage" />}
     />
   );
 };
