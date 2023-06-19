@@ -25,12 +25,13 @@ const UpvoteButtonHandler = (entityid, setPlusOneStatus) => {
     });
 };
 
-const FetchDigest = () => {
+const FetchDigest = ({isAuthenticated}) => {
   const [digest, setDigest] = useState([]);
   const [error, setError] = useState("");
   const [plusOneStatus, setPlusOneStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [digestLoadtime, setDigestLoadtime] = useState(-1);
+  const navigate = useNavigate()
 
   const GetTooltip = (data) => {
     var tooltip = "";
@@ -70,6 +71,9 @@ const FetchDigest = () => {
   };
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/googleloginpage")
+    }
     fetchData();
   }, []);
 
@@ -150,15 +154,9 @@ const FetchDigest = () => {
 };
 
 export default function KnowledgeDailyDigest({ isAuthenticated }) {
-
-  const navigate = useNavigate()
-  if (!isAuthenticated) {
-    navigate("/googleloginpage")
-  }
-
   return (
     <div>
-      <FetchDigest />
+      <FetchDigest isAuthenticated={isAuthenticated}/>
     </div>
   );
 }
