@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
-import { Navigate, BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages";
 import KnowledgeDailyDigest from "./pages/knowledgedailydigest";
 import ArtOfTheDay from "./pages/artoftheday";
@@ -18,16 +18,8 @@ function App() {
         <Route path="/" exact element={<Home />} />
         <Route path="/artoftheday" element={<ArtOfTheDay />} />
         <Route path="/knowledgequery" element={<KnowledgeQuery />} />
-        <Route path="/googleloginpage">
-          <GoogleLoginButton setIsAuthenticated={setIsAuthenticated} />
-        </Route>
-        <Route path="/protected">
-          {isAuthenticated ? (
-            <KnowledgeDailyDigest />
-          ) : (
-            <Navigate to="/googleloginpage" />
-          )}
-        </Route>
+        <Route path="/googleloginpage" element={<GoogleLoginButton setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/knowledgedailydigest" element={<KnowledgeDailyDigest isAuthenticated={isAuthenticated}/>} />
       </Routes>
     </Router>
   );

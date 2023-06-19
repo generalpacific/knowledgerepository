@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Tooltip } from "@mui/material";
 import { Tweet } from "react-twitter-widgets";
+import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 const UpvoteButtonHandler = (entityid, setPlusOneStatus) => {
@@ -148,7 +149,13 @@ const FetchDigest = () => {
   );
 };
 
-export default function KnowledgeDailyDigest() {
+export default function KnowledgeDailyDigest({ isAuthenticated }) {
+
+  const navigate = useNavigate()
+  if (!isAuthenticated) {
+    navigate("/googleloginpage")
+  }
+
   return (
     <div>
       <FetchDigest />
