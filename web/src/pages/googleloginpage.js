@@ -2,10 +2,11 @@ import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-const GoogleLoginButton = () => {
+const GoogleLoginButton = ({ setIsAuthenticated }) => {
   const responseGoogle = (response) => {
     console.log(response);
     // Handle successful login here
+    setIsAuthenticated(true);
   };
 
   const onFailure = (error) => {

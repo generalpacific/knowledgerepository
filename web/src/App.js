@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PrivateRoute from './PrivateRoute';
 import Home from "./pages";
 import KnowledgeDailyDigest from "./pages/knowledgedailydigest";
 import ArtOfTheDay from "./pages/artoftheday";
@@ -9,6 +10,16 @@ import KnowledgeQuery from "./pages/knowledgequery";
 import GoogleLoginButton from './pages/googleloginpage';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
+
   return (
     <Router>
       <Navbar />
@@ -20,7 +31,10 @@ function App() {
         />
         <Route path="/artoftheday" element={<ArtOfTheDay />} />
         <Route path="/knowledgequery" element={<KnowledgeQuery />} />
-        <Route path="/googleloginpage" element={<GoogleLoginButton />} />
+          <Route path="/googleloginpage">
+            <GoogleLoginButton setIsAuthenticated={setIsAuthenticated} />
+          </Route>
+          <PrivateRoute path="/knowledgedailydigest" component={KnowledgeDailyDigest} isAuthenticated={isAuthenticated}/>
       </Routes>
     </Router>
   );
