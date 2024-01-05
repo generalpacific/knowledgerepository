@@ -3,7 +3,9 @@
 This repository has a set of tools that help in managing the knowledge one can
 acquire by reading books, twitter etc.
 
-Current tools:
+### Links:
+
+* [Architecture](https://github.com/generalpacific/knowledgerepository/blob/master/documentation/Architecture.md)
 
 ## Kindle Highlights Ingestor:
   * This tool logs into your Amazon account and downloads all the recent
