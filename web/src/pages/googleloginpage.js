@@ -16,7 +16,7 @@ const GoogleLoginButton = ({ setIsAuthenticated }) => {
 
   return (
     <div>
-      <h2>React Google Login</h2>
+      <h2>Login to access internal pages</h2>
       <br />
       <br />
       <GoogleOAuthProvider clientId="481783681600-g219mmrl19blv252h8b6t10981rqi8bq.apps.googleusercontent.com">
