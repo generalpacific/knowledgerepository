@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages";
 import KnowledgeDailyDigest from "./pages/knowledgedailydigest";
+import Chat from "./pages/chat";
 import ArtOfTheDay from "./pages/artoftheday";
 import KnowledgeQuery from "./pages/knowledgequery";
 import GoogleLoginButton from './pages/googleloginpage';
@@ -20,6 +21,7 @@ function App() {
         <Route path="/knowledgequery" element={<KnowledgeQuery />} />
         <Route path="/googleloginpage" element={<GoogleLoginButton setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/knowledgedailydigest" element={<KnowledgeDailyDigest isAuthenticated={isAuthenticated}/>} />
+        <Route path="/chat" element={<Chat isAuthenticated={isAuthenticated}/>} />
       </Routes>
     </Router>
   );
