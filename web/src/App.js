@@ -20,7 +20,7 @@ function App() {
         <Route path="/artoftheday" element={<ArtOfTheDay />} />
         <Route path="/knowledgequery" element={<KnowledgeQuery />} />
         <Route path="/googleloginpage" element={<GoogleLoginButton setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/knowledgedailydigest" element={<KnowledgeDailyDigest isAuthenticated={isAuthenticated}/>} />
+        <Route path="/knowledgedailydigest" element={<KnowledgeDailyDigest isAuthenticated={true}/>} />
         <Route path="/chat" element={<Chat isAuthenticated={isAuthenticated}/>} />
       </Routes>
     </Router>
