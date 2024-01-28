@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 function ArtOfTheDay(props) {
   const [imageData, setImageData] = useState(null);
   const [promptData, setPromptData] = useState(null);
+  const [errorData, setErrorData] = useState(null);
 
   useEffect(() => {
     const tzOffset = new Date().getTimezoneOffset() * 60000;
@@ -11,16 +12,22 @@ function ArtOfTheDay(props) {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        setImageData(data.image);
-        setPromptData(data.prompt);
+        if (data.image) {
+          setImageData(data.image);
+          setPromptData(data.prompt);
+        } else {
+          setErrorData("Got error from api: " + data.error);
+        }
       })
       .catch((error) => {
         console.log("Error fetching image data:", error);
+        setErrorData("Got error from api: " + error);
       });
   }, []);
 
   return (
     <div>
+      {errorData && <h style={{ marginBottom: "10px" }}>{errorData}</h>}
       {promptData && <h style={{ marginBottom: "10px" }}>{promptData}</h>}
       <br />
       <br />
