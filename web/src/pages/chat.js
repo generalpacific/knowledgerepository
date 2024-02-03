@@ -9,11 +9,20 @@ const Chat = () => {
       const userMessage = { text: inputValue, sender: 'user' };
       setMessages([...messages, userMessage]);
 
-      // Simulate server response
-      setTimeout(() => {
-        const serverMessage = { text: "Response from server WIP.", sender: 'server' };
+      // Send request to server
+      fetch("https://9xj3ly8j6i.execute-api.us-east-2.amazonaws.com/prod/chat?chatinput=" +
+        encodeURIComponent(inputValue), {
+      })
+      .then(response => response.json())
+      .then(data => {
+        const serverMessage = { text: data.response, sender: 'server' };
         setMessages(currentMessages => [...currentMessages, serverMessage]);
-      }, 1000);
+      })
+      .catch(error => {
+        console.error('Error sending message:', error);
+        const errorMessage = { text: "Error sending message. Please try again later.", sender: 'server' };
+        setMessages(currentMessages => [...currentMessages, errorMessage]);
+      });
 
       setInputValue('');
     }
