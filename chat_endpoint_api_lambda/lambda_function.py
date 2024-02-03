@@ -44,9 +44,11 @@ def lambda_handler(event, context):
 
     chatinput = event["queryStringParameters"]["chatinput"]
 
+    response = {'response': 'User sent request: ' + chatinput}
+
     return {
         'statusCode': 200,
-        'body': 'User sent request: ' + chatinput,
+        'body': json.dumps(response),
         'headers': {
             'Access-Control-Allow-Origin': '*',
         }

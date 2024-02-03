@@ -17,7 +17,8 @@ def test_chat_input_success():
     response = lambda_function.lambda_handler(event, None)
 
     assert response['statusCode'] == 200
-    assert response['body'] == "User sent request: This is chat input!"
+    expected_response = {'response': 'User sent request: This is chat input!'}
+    assert response['body'] == json.dumps(expected_response)
 
 
 def test_lambda_handler_no_query_string_parameters():
