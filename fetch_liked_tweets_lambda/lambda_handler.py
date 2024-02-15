@@ -18,6 +18,7 @@ CONSUMER_KEY = os.environ['CONSUMER_KEY']
 CONSUMER_SECRET = os.environ['CONSUMER_SECRET']
 ACCESS_KEY = os.environ['ACCESS_KEY']
 ACCESS_SECRET = os.environ['ACCESS_SECRET']
+SCREEN_NAME = os.environ['SCREEN_NAME']
 
 
 def __get_liked_tweets(since_tweet_id):
@@ -27,7 +28,7 @@ def __get_liked_tweets(since_tweet_id):
 
     api = tweepy.API(auth)
 
-    favorites = api.get_favorites(screen_name='Being_Pacific')
+    favorites = api.get_favorites(screen_name=SCREEN_NAME)
     return favorites
 
 
