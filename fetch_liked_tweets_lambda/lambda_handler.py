@@ -1,15 +1,14 @@
+import boto3
 import datetime
+import dateutil.tz
 import json
 import os
 import random
 import string
-import uuid
-from pprint import pprint
-
-import boto3
-import dateutil.tz
 import tweepy
+import uuid
 from botocore.exceptions import ClientError
+from pprint import pprint
 
 # Gets the liked tweets for the user since the max id that is stored in the
 # DynamoDb table.
@@ -23,13 +22,15 @@ SCREEN_NAME = os.environ['SCREEN_NAME']
 
 def __get_liked_tweets(since_tweet_id):
     print("Setting up tweepy api")
-    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-    auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+    client = tweepy.Client(consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET, access_token=ACCESS_KEY,
+                           access_token_secret=ACCESS_KEY)
 
-    api = tweepy.API(auth)
+    username = SCREEN_NAME
+    user = client.get_user(username=username)
+    user_id = user.data.id
 
-    favorites = api.get_favorites(screen_name=SCREEN_NAME)
-    return favorites
+    liked_tweets = client.get_liked_tweets(id=user_id, max_results=5)
+    return liked_tweets
 
 
 def __get_max_tweet_id(dynamodb=None):
