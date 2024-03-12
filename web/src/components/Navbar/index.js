@@ -18,6 +18,9 @@ const Navbar = () => {
           <NavLink to="/googleloginpage" activeStyle>
             Login
           </NavLink>
+          <NavLink to="/randomentity" activeStyle>
+            Random Entity
+          </NavLink>
         </NavMenu>
       </Nav>
     </>

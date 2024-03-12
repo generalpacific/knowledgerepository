@@ -8,6 +8,7 @@ import Chat from "./pages/chat";
 import ArtOfTheDay from "./pages/artoftheday";
 import KnowledgeQuery from "./pages/knowledgequery";
 import GoogleLoginButton from './pages/googleloginpage';
+import RandomEntity from './pages/randomentity';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,6 +23,7 @@ function App() {
         <Route path="/googleloginpage" element={<GoogleLoginButton setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/knowledgedailydigest" element={<KnowledgeDailyDigest isAuthenticated={true}/>} />
         <Route path="/chat" element={<Chat isAuthenticated={isAuthenticated}/>} />
+        <Route path="/randomentity" element={<RandomEntity />} />
       </Routes>
     </Router>
   );
