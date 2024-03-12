@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Tooltip } from "@mui/material";
 import { Tweet } from "react-twitter-widgets";
-import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 const FetchDigest = () => {
@@ -31,7 +29,10 @@ const FetchDigest = () => {
         ) : randomData.quote !== undefined ? (
           randomData.quote
         ) : (
-          "No quote available for this item."
+          <Tweet
+            tweetId={randomData.tweet_id}
+            options={{ conversation: "none", width: "400px" }}
+          />
         );
         setRandomEntity(content);
       })
@@ -49,8 +50,14 @@ const FetchDigest = () => {
     <div>
       {error && <p>{error}</p>}
       {!error && (
-        <div>
-          <h1> Entity: </h1>
+        <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '100vh', // This will take the full height of the viewport
+            fontSize: '2rem', // Adjust this value to increase or decrease the size
+            textAlign: 'center' // Ensures the text is centered if it wraps to a new line
+        }}>
           <p>{randomEntity}</p>
         </div>
       )}
@@ -64,4 +71,4 @@ export default function RandomEntity() {
       <FetchDigest/>
     </div>
   );
-}
+}   
