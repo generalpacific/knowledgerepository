@@ -18,21 +18,22 @@ const FetchDigest = () => {
         }
       })
       .then((data) => {
-        var digest = data["digest"]
-        // Select a random quote from the digest
+        const digest = data["digest"];
         const randomIndex = Math.floor(Math.random() * digest.length);
         const randomData = digest[randomIndex];
 
-        // Determine content to display based on the data type
         const content = randomData.highlight !== undefined ? (
           randomData.highlight
         ) : randomData.quote !== undefined ? (
           randomData.quote
         ) : (
-          <Tweet
-            tweetId={randomData.tweet_id}
-            options={{ conversation: "none", width: "400px" }}
-          />
+          // Updated this part for responsiveness
+          <div style={{ maxWidth: '100%', overflow: 'hidden' }}>
+            <Tweet
+              tweetId={randomData.tweet_id}
+              options={{ conversation: "none", cards: 'hidden' }}
+            />
+          </div>
         );
         setRandomEntity(content);
       })
@@ -47,28 +48,18 @@ const FetchDigest = () => {
   }, []);
 
   return (
-    <div>
+    <div className="content-container">
       {error && <p>{error}</p>}
-      {!error && (
-        <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            height: '100vh', // This will take the full height of the viewport
-            fontSize: '2rem', // Adjust this value to increase or decrease the size
-            textAlign: 'center' // Ensures the text is centered if it wraps to a new line
-        }}>
-          <p>{randomEntity}</p>
-        </div>
-      )}
+      {!error && <div>{randomEntity}</div>}
     </div>
   );
 };
 
 export default function RandomEntity() {
   return (
-    <div>
-      <FetchDigest/>
+    <div className="app-container">
+      <FetchDigest />
     </div>
   );
-}   
+}
+
