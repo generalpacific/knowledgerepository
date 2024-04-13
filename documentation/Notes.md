@@ -10,6 +10,18 @@ pip3 install <python library> -t python
 zip -r newlayer.zip python/
 ```
 
+### Useful commands
+
+```
+python3.10 -m pip install --upgrade pip
+arch  -x86_64 pip3.10 install requests -t python --upgrade --platform manylinux2014_x86_64 --only-binary=:all:
+arch  -x86_64 pip3.10 install openai -t python --upgrade --platform manylinux2014_x86_64 --only-binary=:all:
+arch  -x86_64 pip3.10 install boto3 -t python --upgrade --platform manylinux2014_x86_64 --only-binary=:all:
+arch  -x86_64 pip3.10 install datetime -t python --upgrade --platform manylinux2014_x86_64 --only-binary=:all:
+zip -r newlayer.zip python/
+
+```
+
 # APi Gateway
 * Use lambda proxy integration to pass the parameters from the api
 
