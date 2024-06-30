@@ -13,8 +13,10 @@ from unittest.mock import patch, MagicMock
 DAILY_DIGEST_TABLE = "daily-digest-table"
 ANKIENTITIES_TABLE = "ankientities-table"
 
-DAILY_DIGEST_ID_TEST_DATA = {"TWITTER": ["1", "2"],
-                             "KINDLE": ["3", "4"], "NOTION": ["5", "6"]
+# Expected digest based on the data. 2 of each are returned sorted by recall
+# weight.
+DAILY_DIGEST_ID_TEST_DATA = {"TWITTER": ["3", "2"],
+                             "KINDLE": ["6", "5"], "NOTION": ["8", "7"]
                              }
 
 
@@ -77,11 +79,18 @@ def populate_dynamodb_table_with_data(create_dynamodb_tables):
     print("Adding data to anki entities table")
     txs = [
         {"entityid": "1", "foreign_id": "tweetid1", "source": "TWITTER", "plus_one": "12", "recallweight": "45"},
-        {"entityid": "2", "foreign_id": "tweetid2", "source": "TWITTER", "plus_one": "12", "recallweight": "45"},
-        {"entityid": "3", "foreign_id": "kindle3", "source": "KINDLE", "plus_one": "12", "recallweight": "45"},
-        {"entityid": "4", "foreign_id": "kindle4", "source": "KINDLE", "plus_one": "12", "recallweight": "45"},
-        {"entityid": "5", "foreign_id": "notion5", "source": "NOTION", "plus_one": "12", "recallweight": "45"},
-        {"entityid": "6", "foreign_id": "notion6", "source": "NOTION", "plus_one": "12", "recallweight": "45"},
+        {"entityid": "2", "foreign_id": "tweetid2", "source": "TWITTER",
+         "plus_one": "12", "recallweight": "20"},
+        {"entityid": "3", "foreign_id": "tweetid3", "source": "TWITTER",
+         "plus_one": "12", "recallweight": "12"},
+        {"entityid": "4", "foreign_id": "kindle3", "source": "KINDLE", "plus_one": "12", "recallweight": "45"},
+        {"entityid": "5", "foreign_id": "kindle4", "source": "KINDLE",
+         "plus_one": "12", "recallweight": "20"},
+        {"entityid": "6", "foreign_id": "kindle5", "source": "KINDLE",
+         "plus_one": "12", "recallweight": "10"},
+        {"entityid": "7", "foreign_id": "notion5", "source": "NOTION", "plus_one": "12", "recallweight": "45"},
+        {"entityid": "8", "foreign_id": "notion6", "source": "NOTION",
+         "plus_one": "12", "recallweight": "29"},
     ]
     for tx in txs:
         table.put_item(Item=tx)
