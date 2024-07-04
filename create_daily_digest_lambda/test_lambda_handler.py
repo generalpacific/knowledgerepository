@@ -80,17 +80,17 @@ def populate_dynamodb_table_with_data(create_dynamodb_tables):
     txs = [
         {"entityid": "1", "foreign_id": "tweetid1", "source": "TWITTER", "plus_one": "12", "recallweight": "45"},
         {"entityid": "2", "foreign_id": "tweetid2", "source": "TWITTER",
-         "plus_one": "12", "recallweight": "20"},
+         "plus_one": "1232", "recallweight": "20"},
         {"entityid": "3", "foreign_id": "tweetid3", "source": "TWITTER",
-         "plus_one": "12", "recallweight": "12"},
+         "plus_one": "0", "recallweight": "12"},
         {"entityid": "4", "foreign_id": "kindle3", "source": "KINDLE", "plus_one": "12", "recallweight": "45"},
         {"entityid": "5", "foreign_id": "kindle4", "source": "KINDLE",
          "plus_one": "12", "recallweight": "20"},
         {"entityid": "6", "foreign_id": "kindle5", "source": "KINDLE",
-         "plus_one": "12", "recallweight": "10"},
+         "plus_one": "34343", "recallweight": "10"},
         {"entityid": "7", "foreign_id": "notion5", "source": "NOTION", "plus_one": "12", "recallweight": "45"},
         {"entityid": "8", "foreign_id": "notion6", "source": "NOTION",
-         "plus_one": "12", "recallweight": "29"},
+         "plus_one": "23", "recallweight": "29"},
     ]
     for tx in txs:
         table.put_item(Item=tx)
