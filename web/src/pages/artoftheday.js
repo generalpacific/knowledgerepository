@@ -11,11 +11,12 @@ function ArtOfTheDay(props) {
   const [imageData2, setImageData2] = useState(null);
   const [promptData2, setPromptData2] = useState(null);
   const [errorData2, setErrorData2] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("");
 
   useEffect(() => {
     const tzOffset = new Date().getTimezoneOffset() * 60000;
     const today = new Date(Date.now() - tzOffset).toISOString().slice(0, 10);
-    const url = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${today}`;
+    const url = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${selectedDate}`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -114,10 +115,20 @@ function ArtOfTheDay(props) {
         console.log("Error fetching image data:", error);
         setErrorData("Got error from api: " + error);
       });
-  }, []);
+  }, [selectedDate]);
+
+
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value);
+  };
 
   return (
     <div>
+      <input
+        type="date"
+        value={selectedDate}
+        onChange={handleDateChange}
+      />
       <div>
         {errorData && <h style={{ marginBottom: "10px" }}>{errorData}</h>}
         {promptData && <h style={{ marginBottom: "10px" }}>{promptData}</h>}
