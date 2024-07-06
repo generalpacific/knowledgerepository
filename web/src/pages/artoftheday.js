@@ -14,8 +14,6 @@ function ArtOfTheDay(props) {
   const [selectedDate, setSelectedDate] = useState("");
 
   useEffect(() => {
-    const tzOffset = new Date().getTimezoneOffset() * 60000;
-    const today = new Date(Date.now() - tzOffset).toISOString().slice(0, 10);
     const url = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${selectedDate}`;
     fetch(url)
       .then((response) => response.json())
@@ -49,7 +47,7 @@ function ArtOfTheDay(props) {
         console.log("Error fetching image data:", error);
         setErrorData("Got error from api: " + error);
       });
-    const url1 = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${today}&index=1`;
+    const url1 = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${selectedDate}&index=1`;
     fetch(url1)
       .then((response) => response.json())
       .then((data) => {
@@ -58,7 +56,7 @@ function ArtOfTheDay(props) {
           // Decode base64 (convert ascii to binary)
           const binaryString = window.atob(data.image);
           // Convert binary string to character-number array
-          const charCodeArray = Array.from(binaryString, c => c.charCodeAt(0));
+         const charCodeArray = Array.from(binaryString, c => c.charCodeAt(0));
           // Convert character-number array to Uint8Array
           const binData = new Uint8Array(charCodeArray);
           // Decompress using pako
@@ -82,7 +80,7 @@ function ArtOfTheDay(props) {
         console.log("Error fetching image data:", error);
         setErrorData("Got error from api: " + error);
       });
-    const url2 = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${today}&index=2`;
+    const url2 = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${selectedDate}&index=2`;
     fetch(url2)
       .then((response) => response.json())
       .then((data) => {
