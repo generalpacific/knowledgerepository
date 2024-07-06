@@ -78,7 +78,7 @@ function ArtOfTheDay(props) {
       })
       .catch((error) => {
         console.log("Error fetching image data index 1:", error);
-        setErrorData("Got error from api index 1: " + error);
+        setErrorData1("Got error from api index 1: " + error);
       });
     const url2 = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${selectedDate}&index=2`;
     fetch(url2)
@@ -111,7 +111,7 @@ function ArtOfTheDay(props) {
       })
       .catch((error) => {
         console.log("Error fetching image data index 2:", error);
-        setErrorData("Got error from api index 2: " + error);
+        setErrorData2("Got error from api index 2: " + error);
       });
   }, [selectedDate]);
 
@@ -122,12 +122,15 @@ function ArtOfTheDay(props) {
 
   return (
     <div>
+      <h> Select date: </h>
       <input
         type="date"
         value={selectedDate}
         onChange={handleDateChange}
       />
       <div>
+        <br /><br />
+        {<h> Art 1: </h>}
         {errorData && <h style={{ marginBottom: "10px" }}>{errorData}</h>}
         {promptData && <h style={{ marginBottom: "10px" }}>{promptData}</h>}
         <br />
@@ -137,6 +140,8 @@ function ArtOfTheDay(props) {
         )}
       </div>
       <div>
+        <br /><br />
+        {<h> Art 2: </h>}
         {errorData1 && <h style={{ marginBottom: "10px" }}>{errorData1}</h>}
         {promptData1 && <h style={{ marginBottom: "10px" }}>{promptData1}</h>}
         <br />
@@ -146,6 +151,8 @@ function ArtOfTheDay(props) {
         )}
       </div>
       <div>
+        <br /><br />
+        {<h> Art 3: </h>}
         {errorData2 && <h style={{ marginBottom: "10px" }}>{errorData2}</h>}
         {promptData2 && <h style={{ marginBottom: "10px" }}>{promptData2}</h>}
         <br />
