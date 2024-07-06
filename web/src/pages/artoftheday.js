@@ -40,12 +40,12 @@ function ArtOfTheDay(props) {
           setImageData(decompressedBase64);
           setPromptData(data.prompt);
         } else {
-          setErrorData("Got error from api: " + data.error);
+          setErrorData("Got error from api for index 0: " + data.error);
         }
       })
       .catch((error) => {
-        console.log("Error fetching image data:", error);
-        setErrorData("Got error from api: " + error);
+        console.log("Error fetching image data index 0:", error);
+        setErrorData("Got error from api index 0: " + error);
       });
     const url1 = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${selectedDate}&index=1`;
     fetch(url1)
@@ -73,12 +73,12 @@ function ArtOfTheDay(props) {
           setImageData1(decompressedBase64);
           setPromptData1(data.prompt);
         } else {
-          setErrorData1("Got error from api: " + data.error);
+          setErrorData1("Got error from api index 1: " + data.error);
         }
       })
       .catch((error) => {
-        console.log("Error fetching image data:", error);
-        setErrorData("Got error from api: " + error);
+        console.log("Error fetching image data index 1:", error);
+        setErrorData("Got error from api index 1: " + error);
       });
     const url2 = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${selectedDate}&index=2`;
     fetch(url2)
@@ -106,12 +106,12 @@ function ArtOfTheDay(props) {
           setImageData2(decompressedBase64);
           setPromptData2(data.prompt);
         } else {
-          setErrorData2("Got error from api: " + data.error);
+          setErrorData2("Got error from api index 2: " + data.error);
         }
       })
       .catch((error) => {
-        console.log("Error fetching image data:", error);
-        setErrorData("Got error from api: " + error);
+        console.log("Error fetching image data index 2:", error);
+        setErrorData("Got error from api index 2: " + error);
       });
   }, [selectedDate]);
 
