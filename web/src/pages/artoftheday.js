@@ -14,6 +14,9 @@ function ArtOfTheDay(props) {
   const [selectedDate, setSelectedDate] = useState("");
 
   useEffect(() => {
+    setErrorData("")
+    setErrorData1("")
+    setErrorData2("")
     const url = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${selectedDate}`;
     fetch(url)
       .then((response) => response.json())
@@ -45,7 +48,7 @@ function ArtOfTheDay(props) {
       })
       .catch((error) => {
         console.log("Error fetching image data index 0:", error);
-        setErrorData("Got error from api index 0: " + error);
+        setErrorData("Exception: Got error from api index 0: " + error);
       });
     const url1 = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${selectedDate}&index=1`;
     fetch(url1)
@@ -78,7 +81,7 @@ function ArtOfTheDay(props) {
       })
       .catch((error) => {
         console.log("Error fetching image data index 1:", error);
-        setErrorData1("Got error from api index 1: " + error);
+        setErrorData1("Exception: Got error from api index 1: " + error);
       });
     const url2 = `https://6h5c17qwla.execute-api.us-east-2.amazonaws.com/prod/artoftheday?date=${selectedDate}&index=2`;
     fetch(url2)
@@ -111,7 +114,7 @@ function ArtOfTheDay(props) {
       })
       .catch((error) => {
         console.log("Error fetching image data index 2:", error);
-        setErrorData2("Got error from api index 2: " + error);
+        setErrorData2("Exception: Got error from api index 2: " + error);
       });
   }, [selectedDate]);
 
